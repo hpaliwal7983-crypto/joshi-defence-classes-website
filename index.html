@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090a09">
+  <meta name="description" content="Prepare for your defence career with Joshi Defence Classes. Explore defence preparation, live classes, recorded lessons and study material.">
+  <title>Joshi Defence Classes | Dream. Prepare. Achieve.</title>
+  <style>
+    :root{color-scheme:dark;--bg:#090a09;--panel:#151513;--panel2:#1e1d19;--gold:#f1c75b;--gold2:#ffdf83;--text:#f5f0e2;--muted:#c0bcae;--line:#3b372c;--red:#bc3438;--green:#168251;--max:1180px}
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    a{color:inherit}
+    .skip{position:absolute;left:-999px;top:8px;background:var(--gold);color:#111;padding:10px 14px;border-radius:8px;z-index:10}.skip:focus{left:8px}
+    .wrap{width:min(var(--max),calc(100% - 40px));margin-inline:auto}
+    .topbar{position:sticky;top:0;z-index:5;background:#090a09ed;border-bottom:1px solid #38352b;backdrop-filter:blur(14px)}
+    .nav{min-height:76px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+    .brand{display:flex;align-items:center;gap:12px;text-decoration:none;font-weight:900;letter-spacing:.04em}
+    .crest{width:44px;height:48px;display:grid;place-items:center;clip-path:polygon(50% 0,100% 19%,91% 73%,50% 100%,9% 73%,0 19%);background:linear-gradient(145deg,#ffe493,#c9972b);color:#16130b;font-size:12px;font-weight:950}
+    .brand-name{font-size:15px;line-height:1.15}.brand-name span{display:block;color:var(--gold);font-size:12px;letter-spacing:.18em;margin-top:5px}
+    .navlinks{display:flex;align-items:center;gap:26px}.navlinks a{text-decoration:none;color:#d8d2c3;font-size:14px}.navlinks a:hover{color:var(--gold)}
+    .button{display:inline-flex;align-items:center;justify-content:center;gap:9px;border:1px solid transparent;border-radius:10px;padding:12px 18px;background:linear-gradient(115deg,var(--gold2),#dcae43);color:#17130a;font-weight:800;text-decoration:none;box-shadow:0 8px 24px #cf9e3033;transition:transform .18s,box-shadow .18s}
+    .button:hover{transform:translateY(-2px);box-shadow:0 12px 30px #cf9e3055}.button.secondary{background:#191916;border-color:#67604d;color:var(--text);box-shadow:none}.button.secondary:hover{border-color:var(--gold);color:var(--gold)}
+    .hero{position:relative;overflow:hidden;min-height:590px;display:grid;align-items:center;background:radial-gradient(ellipse at 79% 24%,#5a482766 0,transparent 30%),radial-gradient(ellipse at 86% 82%,#1e4f3866 0,transparent 25%),linear-gradient(110deg,#0a0a09 10%,#17140e 64%,#0a0b09 100%)}
+    .hero:before{content:"";position:absolute;inset:0;background:linear-gradient(100deg,#090a09 0%,#090a09dd 44%,transparent 100%);pointer-events:none}
+    .hero:after{content:"";position:absolute;right:-10%;bottom:0;width:62%;height:100%;background:linear-gradient(0deg,#080908 0%,transparent 35%),radial-gradient(ellipse at 75% 60%,#d6aa4c26 0 1%,transparent 36%);pointer-events:none}
+    .hero-inner{position:relative;z-index:1;display:grid;grid-template-columns:1.1fr .9fr;gap:42px;align-items:center;padding-block:74px}
+    .eyebrow{display:inline-flex;align-items:center;gap:10px;color:var(--gold);font-size:12px;font-weight:850;letter-spacing:.18em;text-transform:uppercase}.eyebrow:before{content:"";width:29px;height:2px;background:var(--gold)}
+    h1,h2,h3,p{margin-top:0}h1{font-size:clamp(42px,6vw,74px);line-height:.99;letter-spacing:-.045em;margin:20px 0}.gold{color:var(--gold)}
+    .hero-copy{max-width:590px;color:#d5d0c4;font-size:18px}.hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+    .pillrow{display:flex;flex-wrap:wrap;gap:9px;margin-top:30px}.pill{border:1px solid #6a6048;border-radius:999px;padding:6px 12px;color:#e4dac0;font-size:12px;background:#11110fb3}
+    .hero-art{position:relative;min-height:365px;display:grid;place-items:center}.sun{position:absolute;width:min(30vw,310px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,#f6cf6b55 0,#ad762b1d 52%,transparent 70%);filter:blur(5px)}
+    .shield{position:relative;width:min(80%,340px);aspect-ratio:.84;display:grid;place-items:center;clip-path:polygon(50% 0,96% 17%,89% 70%,50% 100%,11% 70%,4% 17%);background:linear-gradient(145deg,#ffe18a,#9c7222 52%,#3b2c10);padding:10px;filter:drop-shadow(0 24px 38px #0009)}
+    .shield-inner{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;clip-path:polygon(50% 0,96% 17%,89% 70%,50% 100%,11% 70%,4% 17%);background:radial-gradient(ellipse at 50% 30%,#383020,#0c0d0c 66%);border:2px solid #17140c}
+    .crest-large{font-size:88px;line-height:1;filter:drop-shadow(0 0 16px #d9ad4a55)}.shield-inner strong{color:var(--gold);font-size:26px;letter-spacing:.13em;margin-top:6px}.shield-inner small{color:#e6dcc3;letter-spacing:.25em;font-size:10px;margin-top:4px}
+    .flag{position:absolute;left:0;right:0;bottom:0;height:7px;background:linear-gradient(to right,#ef8d3b 0 33.3%,#fff 33.3% 66.6%,#198754 66.6%)}
+    section{scroll-margin-top:90px}.section{padding:82px 0}.section-head{max-width:690px;margin-bottom:30px}.section-head h2{font-size:clamp(30px,4vw,44px);line-height:1.08;letter-spacing:-.03em;margin-bottom:12px}.section-head p{color:var(--muted);margin-bottom:0}
+    .intro{display:grid;grid-template-columns:1fr 1fr;gap:54px;align-items:center}.intro-panel{border:1px solid var(--line);border-radius:20px;background:linear-gradient(135deg,#181712,#10110f);padding:30px;box-shadow:0 18px 48px #0005}.intro-panel .big{font-size:42px;line-height:1;color:var(--gold);font-weight:900}.intro-panel p{color:var(--muted);margin:14px 0 0}
+    .branch-grid,.feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.branch{position:relative;min-height:220px;padding:23px;border:1px solid var(--line);border-radius:17px;background:linear-gradient(145deg,#1b1a16,#111210);overflow:hidden}.branch:after{content:"";position:absolute;right:-18px;bottom:-35px;width:130px;height:130px;border:1px solid #d3a74244;border-radius:50%;box-shadow:0 0 0 16px #d3a74208,0 0 0 32px #d3a74205}.branch .icon{font-size:29px}.branch h3{color:var(--gold);margin:12px 0 5px;font-size:21px}.branch p{color:var(--muted);margin:0;max-width:270px;font-size:14px}
+    .darkband{background:linear-gradient(90deg,#15130d,#0c0d0b);border-block:1px solid #332d20}.features{grid-template-columns:repeat(4,1fr)}.feature{padding:22px;border:1px solid var(--line);border-radius:15px;background:#121310}.feature .icon{display:grid;place-items:center;width:43px;height:43px;border-radius:12px;background:#332b18;color:var(--gold);font-size:21px}.feature h3{font-size:17px;margin:16px 0 6px}.feature p{font-size:13px;color:var(--muted);margin:0}
+    .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;counter-reset:step}.step{counter-increment:step;border-left:2px solid var(--gold);padding:4px 0 5px 20px}.step:before{content:"0" counter(step);display:block;color:var(--gold);font-size:12px;font-weight:900;letter-spacing:.14em;margin-bottom:8px}.step h3{margin:0 0 7px}.step p{color:var(--muted);margin:0;font-size:14px}
+    .cta{display:flex;align-items:center;justify-content:space-between;gap:30px;border:1px solid #79612e;border-radius:20px;padding:30px;background:radial-gradient(ellipse at 90% 0,#c4953a2b,transparent 44%),linear-gradient(120deg,#211a0d,#11120f)}.cta h2{font-size:clamp(26px,4vw,38px);margin:0 0 6px}.cta p{color:var(--muted);margin:0}
+    footer{border-top:1px solid var(--line);padding:24px 0;color:#aaa596;font-size:13px}.foot{display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap}.footlinks{display:flex;gap:17px}.foot a{color:#d9c16f;text-decoration:none}.foot a:hover{text-decoration:underline}
+    @media(max-width:850px){.navlinks{display:none}.hero-inner{grid-template-columns:1fr;gap:10px}.hero-art{min-height:270px}.shield{width:225px}.crest-large{font-size:60px}.branch-grid{grid-template-columns:1fr}.features{grid-template-columns:repeat(2,1fr)}.intro{grid-template-columns:1fr;gap:22px}.steps{grid-template-columns:1fr}.hero{min-height:auto}}
+    @media(max-width:520px){.wrap{width:min(var(--max),calc(100% - 28px))}.nav{min-height:68px}.brand-name{font-size:13px}.brand-name span{font-size:10px}.nav>.button{padding:10px 12px;font-size:13px}.hero-inner{padding-block:55px 30px}.hero-copy{font-size:16px}.hero-art{min-height:220px}.shield{width:185px}.crest-large{font-size:51px}.shield-inner strong{font-size:20px}.section{padding:58px 0}.features{grid-template-columns:1fr}.cta{align-items:flex-start;flex-direction:column;padding:23px}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition:none!important}}
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="topbar">
+    <div class="wrap nav">
+      <a class="brand" href="./" aria-label="Joshi Defence Classes home"><span class="crest" aria-hidden="true">JDC</span><span class="brand-name">JOSHI DEFENCE<span>CLASSES</span></span></a>
+      <nav class="navlinks" aria-label="Main navigation"><a href="#programmes">Preparation</a><a href="#learning">Learning</a><a href="#join">How to join</a></nav>
+      <a class="button" href="student/">Student login <span aria-hidden="true">→</span></a>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero">
+      <div class="wrap hero-inner">
+        <div>
+          <span class="eyebrow">Joshi Defence Classes</span>
+          <h1>Dream.<br><span class="gold">Prepare.</span><br>Achieve.</h1>
+          <p class="hero-copy">Apne defence career ke liye discipline ke saath taiyaari karein. Classes, study material aur batch updates ek hi jagah par dekhein.</p>
+          <div class="hero-actions"><a class="button" href="student/">Student portal <span aria-hidden="true">→</span></a><a class="button secondary" href="#programmes">Explore preparation</a></div>
+          <div class="pillrow" aria-label="Preparation areas"><span class="pill">Army</span><span class="pill">Navy</span><span class="pill">Air Force</span></div>
+        </div>
+        <div class="hero-art" aria-label="Joshi Defence Classes JDC emblem">
+          <div class="sun"></div><div class="shield"><div class="shield-inner"><span class="crest-large" aria-hidden="true">✦</span><strong>JDC</strong><small>DEFENCE CLASSES</small></div></div>
+        </div>
+      </div>
+      <div class="flag" aria-hidden="true"></div>
+    </section>
+
+    <section class="section" id="programmes">
+      <div class="wrap intro">
+        <div class="section-head"><span class="eyebrow">Your preparation starts here</span><h2>Build a steady routine for your defence goal.</h2><p>Apni taiyaari ke liye batch information, class updates aur learning resources paayein. Student portal ka access academy se account milne ke baad use karein.</p></div>
+        <div class="intro-panel"><div class="big">JDC</div><p>Dream • Prepare • Achieve<br>Har din ki taiyaari, aapke lakshya ki taraf ek kadam.</p></div>
+      </div>
+      <div class="wrap branch-grid" style="margin-top:26px">
+        <article class="branch"><span class="icon" aria-hidden="true">◎</span><h3>Army preparation</h3><p>Apne batch ke schedule, live class aur study updates student portal par dekhein.</p></article>
+        <article class="branch"><span class="icon" aria-hidden="true">⚓</span><h3>Navy preparation</h3><p>Academy se apni preparation batch aur enrollment details ke baare mein poochhein.</p></article>
+        <article class="branch"><span class="icon" aria-hidden="true">✦</span><h3>Air Force preparation</h3><p>Student account milne par enrolled batch ka learning material access karein.</p></article>
+      </div>
+    </section>
+
+    <section class="section darkband" id="learning">
+      <div class="wrap">
+        <div class="section-head"><span class="eyebrow">Learning portal</span><h2>Class resources, organised for students.</h2><p>Enrolled students apne account se class information aur academy ke shared resources dekh sakte hain.</p></div>
+        <div class="feature-grid features">
+          <article class="feature"><span class="icon" aria-hidden="true">◉</span><h3>Live classes</h3><p>Schedule aur live class link apne batch ke liye dekhein.</p></article>
+          <article class="feature"><span class="icon" aria-hidden="true">▶</span><h3>Recorded lessons</h3><p>Published lesson links ko dobara access karein.</p></article>
+          <article class="feature"><span class="icon" aria-hidden="true">▤</span><h3>Study PDFs</h3><p>Enrolled batch ke liye shared study material kholein.</p></article>
+          <article class="feature"><span class="icon" aria-hidden="true">✉</span><h3>Announcements</h3><p>Academy ke batch updates aur notices paayein.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="join">
+      <div class="wrap">
+        <div class="section-head"><span class="eyebrow">Getting started</span><h2>How to join the student portal</h2><p>Student accounts academy administrator banata hai. Portal me self sign-up nahi hai.</p></div>
+        <div class="steps">
+          <article class="step"><h3>Ask the academy</h3><p>Apne batch, schedule aur enrollment ke baare me academy se seedha poochhein.</p></article>
+          <article class="step"><h3>Get your student account</h3><p>Administrator aapka account aur batch access set karega.</p></article>
+          <article class="step"><h3>Sign in to learn</h3><p>Student portal par registered mobile number se OTP sign-in karein.</p></article>
+        </div>
+        <div class="cta" style="margin-top:40px"><div><h2>Already enrolled?</h2><p>Apne classes aur resources ke liye student portal kholein.</p></div><a class="button" href="student/">Open student portal <span aria-hidden="true">→</span></a></div>
+      </div>
+    </section>
+  </main>
+
+  <footer><div class="wrap foot"><span>© 2026 Joshi Defence Classes</span><div class="footlinks"><a href="admin/">Admin login</a><a href="privacy.html">Privacy</a></div><span>Dream • Prepare • Achieve</span></div></footer>
+</body>
+</html>
