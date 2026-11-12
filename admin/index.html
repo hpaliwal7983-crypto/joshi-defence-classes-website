@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Joshi Defence Classes — Admin</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--bg:#090a09;--panel:#151515;--panel2:#20201d;--gold:#f3c75e;--text:#f5f1e6;--muted:#b7b3a7;--line:#38352b;--red:#e38d80}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 75% -20%,#47330e 0,transparent 34%),linear-gradient(145deg,#090a09,#151511 65%,#0b0d0b);color:var(--text);font:15px system-ui,Arial;min-height:100vh}
+header{padding:20px 5vw;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+.brand{font-weight:800;letter-spacing:.4px}.brand span{color:var(--gold)}main{max-width:1150px;margin:30px auto;padding:0 18px}
+.card{background:linear-gradient(145deg,#191918,#111210);border:1px solid var(--line);border-radius:16px;padding:22px;margin-bottom:18px;box-shadow:0 12px 32px #0005}
+h1,h2{margin:0 0 14px}h1{font-size:25px}h2{font-size:19px;color:var(--gold)}
+p,.muted{color:var(--muted)}input,textarea,select{width:100%;padding:12px;border-radius:9px;border:1px solid var(--line);background:#0e1711;color:var(--text);margin:6px 0 12px;font:inherit}
+button{background:linear-gradient(115deg,#f9d779,#d5a537);color:#17130b;border:0;border-radius:9px;padding:11px 16px;font-weight:750;cursor:pointer;margin:4px 5px 4px 0}
+button.secondary{background:var(--panel2);color:var(--text);border:1px solid var(--line)}
+button.danger{background:#61342e;color:white}.hidden{display:none}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+nav{display:flex;gap:7px;flex-wrap:wrap;margin:14px 0}.tab.active{outline:1px solid var(--gold);background:#282316;color:var(--gold)}
+.item{padding:12px;border:1px solid var(--line);border-radius:10px;margin:8px 0;background:linear-gradient(130deg,#1a1a18,#111210)}
+small{color:var(--muted)}#message{padding:10px;border-radius:8px;margin:12px 0;background:#223329;color:var(--gold)}
+label{font-size:13px;color:var(--muted)}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+@media(max-width:600px){header{padding:16px}main{margin:16px auto}.card{padding:16px}}
+</style></head>
+<body>
+<header><div class="brand">🛡️ JOSHI <span>DEFENCE CLASSES</span></div><div id="sessionLabel" class="muted">Admin Portal</div></header>
+<main>
+<div id="message" class="hidden"></div>
+<section id="login" class="card">
+<h1>Admin Login</h1><p>Apne admin email par secure sign-in link bhejein. Password ya OTP kisi ke saath share na karein.</p>
+<label>Admin email</label><input id="email" type="email" placeholder="you@example.com">
+<button id="sendLink">Send login link</button><p class="muted">Email link open karne ke baad portal par wapas aayen.</p>
+</section>
+<section id="app" class="hidden">
+<div class="card"><div class="row" style="justify-content:space-between"><div><h1>Admin Dashboard</h1><p>Students, batches aur classes manage karein.</p></div><button class="secondary" id="logout">Logout</button></div>
+<div class="grid" id="stats"></div></div>
+<nav id="tabs">
+<button class="tab active" data-tab="batches">Batches</button><button class="tab" data-tab="subjects">Subjects</button><button class="tab" data-tab="classes">Recorded</button><button class="tab" data-tab="live_sessions">Live Classes</button><button class="tab" data-tab="announcements">Announcements</button><button class="tab" data-tab="study_pdfs">PDF Library</button><button class="tab" data-tab="profiles">Students</button><button class="tab" data-tab="enrollments">Enrollments</button>
+</nav>
+<div class="card"><h2 id="sectionTitle">Batches</h2><div id="formArea"></div><div id="records"></div></div>
+<div class="card"><h2>Create Student Account</h2><p>Student phone must be in international format, e.g. +91… SMS OTP provider must be enabled in Supabase Auth.</p>
+<div class="grid"><div><label>Student full name</label><input id="studentName" placeholder="Full name"></div><div><label>Phone number</label><input id="studentPhone" placeholder="+91XXXXXXXXXX"></div><div><label>Initial batch (optional)</label><select id="studentBatch"><option value="">Choose after creation</option></select></div></div>
+<button id="createStudent">Create student</button></div>
+</section>
+</main>
+<script>
+const SUPABASE_URL="https://ttadesyoupsljjbrcaxy.supabase.co";
+const SUPABASE_KEY="sb_publishable_62pS83NmWYYky80N9a9Mow_Di2m0lEE";
+const client=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+let currentTable="batches";
+const $=id=>document.getElementById(id);
+function msg(t){$("message").textContent=t;$("message").classList.remove("hidden")}
+const config={
+batches:{title:"Batches",fields:[["name","Batch name"],["description","Description"],["price_inr","One-time price (INR; paise not required)"],["is_purchasable","Available for purchase (true/false)"],["google_product_id","Google Play product ID"],["apple_product_id","App Store product ID"],["is_active","Active (true/false)"]]},
+subjects:{title:"Subjects",fields:[["name","Subject name"],["description","Description"]]},
+classes:{title:"Recorded Classes",fields:[["batch_id","Batch UUID"],["subject_id","Subject UUID (optional)"],["title","Class title"],["description","Description"],["video_url","YouTube Unlisted URL"],["status","draft / published / archived"]]},
+live_sessions:{title:"Live Classes",fields:[["batch_id","Batch UUID"],["subject_id","Subject UUID (optional)"],["title","Live class title"],["description","Description"],["live_url","YouTube Live URL"],["scheduled_start","Schedule (ISO date/time)"],["status","scheduled / live / ended / cancelled"]]},
+announcements:{title:"Announcements",fields:[["title","Title"],["body","Message"],["target_batch_id","Batch UUID (blank = all)"],["is_published","Published (true/false)"]]},
+study_pdfs:{title:"PDF Library",fields:[["batch_id","Batch UUID"],["subject_id","Subject UUID (optional)"],["title","PDF title"],["storage_path","Private bucket file path"],["status","draft / published / archived"]]},
+profiles:{title:"Students",fields:[["full_name","Student name"],["is_active","Active (true/false)"]]},
+enrollments:{title:"Enrollments",fields:[["student_id","Student profile UUID"],["batch_id","Batch UUID"]]}
+};
+function parseValue(k,v){if(["is_active","is_published","is_purchasable"].includes(k))return v.toLowerCase()==="true";if(k==="price_inr"){const n=Number(v);if(!Number.isSafeInteger(n)||n<0)throw Error("Price must be a non-negative whole INR amount.");return n}if(["subject_id","target_batch_id","google_product_id","apple_product_id","description","scheduled_start","actual_start","actual_end","live_url","video_url","storage_path"].includes(k)&&!v.trim())return null;return v.trim()}
+async function invoke(body){const {data:{session}}=await client.auth.getSession();if(!session)throw Error("Login session nahi mili. Dobara login karein.");const {data,error}=await client.functions.invoke("admin-manage-data",{body});if(error)throw error;if(data?.error)throw Error(data.error);return data}
+function formFor(table){const c=config[table];$("sectionTitle").textContent=c.title;$("formArea").innerHTML="";
+const form=document.createElement("div");form.className="grid";
+c.fields.forEach(([key,label])=>{const wrap=document.createElement("div");const l=document.createElement("label");l.textContent=label;const input=document.createElement(key==="body"||key==="description"?"textarea":"input");input.dataset.key=key;input.placeholder=label;wrap.append(l,input);form.append(wrap)});
+if(table==="study_pdfs"){const wrap=document.createElement("div"),l=document.createElement("label"),file=document.createElement("input");l.textContent="Upload PDF to private bucket";file.type="file";file.accept="application/pdf,.pdf";file.setAttribute("aria-label",l.textContent);file.onchange=async()=>{const f=file.files?.[0];if(!f)return;if(f.type!=="application/pdf"&&!f.name.toLowerCase().endsWith(".pdf")){file.value="";return msg("Please choose a PDF file.")}try{const path=`${crypto.randomUUID()}/${f.name.replace(/[^a-zA-Z0-9._-]/g,"_")}`;const {error}=await client.storage.from("study-pdfs").upload(path,f,{contentType:"application/pdf",upsert:false});if(error)throw error;form.querySelector('[data-key="storage_path"]').value=path;msg("PDF uploaded privately. Save its metadata to finish.")}catch(e){msg(e.message)}};wrap.append(l,file);form.append(wrap)}
+const btn=document.createElement("button");btn.textContent="Save new "+c.title.slice(0,-1);btn.onclick=async()=>{try{const data={};form.querySelectorAll("[data-key]").forEach(el=>{if(el.value.trim()!=="")data[el.dataset.key]=parseValue(el.dataset.key,el.value)});await invoke({action:"create",table,data});msg("Record saved.");await load()}catch(e){msg(e.message)}};$("formArea").append(form,btn)}
+async function load(){try{const r=await invoke({action:"list",table:currentTable});$("records").innerHTML="";(r.data||[]).forEach(row=>{const d=document.createElement("div");d.className="item";const title=row.name||row.title||row.full_name||row.id;const details=Object.entries(row).filter(([k])=>!["id","created_at"].includes(k)).map(([k,v])=>k+": "+(v??"—")).join(" · ");const p=document.createElement("div");p.textContent=title;const s=document.createElement("small");s.textContent=details;const edit=document.createElement("button");edit.className="secondary";edit.textContent="Edit";edit.onclick=()=>editRecord(row);const del=document.createElement("button");del.className="danger";del.textContent="Delete";del.onclick=async()=>{if(confirm("Delete this record?")){try{await invoke({action:"delete",table:currentTable,id:row.id});msg("Record deleted.");await load()}catch(e){msg(e.message)}}};d.append(p,s,document.createElement("br"),edit,del);$("records").append(d)});if(!r.data?.length)$("records").textContent="Abhi koi record nahi hai."}catch(e){msg(e.message)}}
+function editRecord(row){const c=config[currentTable],data={};c.fields.forEach(([k])=>{const val=prompt(k.replaceAll("_"," "),row[k]??"");if(val!==null)data[k]=parseValue(k,val)});if(!Object.keys(data).length)return;invoke({action:"update",table:currentTable,id:row.id,data}).then(()=>{msg("Record updated.");load()}).catch(e=>msg(e.message))}
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));b.classList.add("active");currentTable=b.dataset.tab;formFor(currentTable);load()});
+$("sendLink").onclick=async()=>{const email=$("email").value.trim();if(!email)return msg("Email enter karein.");const {error}=await client.auth.signInWithOtp({email,options:{emailRedirectTo:location.href}});if(error)msg(error.message);else msg("Login link email par bhej diya gaya. Email kholkar link click karein.")};
+$("logout").onclick=async()=>{await client.auth.signOut();location.reload()};
+async function refreshBatchPicker(){const {data,error}=await client.from("batches").select("id,name").order("name");if(error)return;$("studentBatch").innerHTML='<option value="">Choose after creation</option>'+data.map(b=>`<option value="${b.id}">${b.name}</option>`).join("")}
+$("createStudent").onclick=async()=>{try{const {data,error}=await client.functions.invoke("admin-create-student",{body:{full_name:$("studentName").value.trim(),phone:$("studentPhone").value.trim()}});if(error)throw error;if(data?.error)throw Error(data.error);if($("studentBatch").value)await invoke({action:"create",table:"enrollments",data:{student_id:data.user_id,batch_id:$("studentBatch").value}});$("studentName").value="";$("studentPhone").value="";msg("Student created"+($("studentBatch").value?" and assigned to batch":"")+". Student must verify phone OTP.");currentTable="profiles";formFor(currentTable);await load()}catch(e){msg(e.message)}};
+async function start(){const {data:{session}}=await client.auth.getSession();if(!session)return;const {data,error}=await client.from("profiles").select("role,is_active").eq("id",session.user.id).single();if(error||data?.role!=="admin"||!data?.is_active){msg("Is email account ko admin access nahi hai.");await client.auth.signOut();return}
+$("login").classList.add("hidden");$("app").classList.remove("hidden");$("sessionLabel").textContent="Secure Admin Session";formFor(currentTable);load();refreshBatchPicker();
+const counts=await Promise.all(["profiles","batches","classes","live_sessions"].map(t=>client.from(t).select("*",{count:"exact",head:true})));$("stats").innerHTML=["Students","Batches","Recorded","Live"].map((n,i)=>`<div class="item"><small>${n}</small><h2>${counts[i].count??0}</h2></div>`).join("");
+}
+client.auth.onAuthStateChange(()=>start());start();
+</script></body></html>
