@@ -221,10 +221,10 @@
     wrap.append(form); out.append(wrap);
     const setup = node("section", "surface surface-pad screen-section"); setup.append(node("h2", "", "Security & Service Setup")); const list = node("div", "setup-list"); const items = [
       ["Account permissions", "One owner admin can manage the academy. Student records and content are restricted by active account and assigned batch."],
-      ["Student SMS OTP", "Real SMS delivery requires an SMS provider configured under Supabase Auth → Providers → Phone."],
-      ["Password reset email", "Admin recovery requires a configured email sender and an allowed Supabase Auth redirect URL."],
+      ["Student SMS OTP", "To deliver real SMS, configure Supabase Auth → Sign In / Providers → Phone with an SMS provider. For Twilio, add Account SID, Auth Token, and Message Service SID in Supabase; keep credentials out of this app and chat."],
+      ["Password reset email", "Admin reset needs custom SMTP credentials (host, port, username, password, sender address/name) and the deployed admin URL in Supabase Auth redirect URLs. The built-in sender is for team-only testing."],
       ["Notifications", "Published and scheduled notices appear in the student app. SMS and push notifications need a separately configured delivery provider."],
-      ["PDF and video storage", "PDFs use the private study-pdfs bucket with short-lived signed links. Classes use YouTube; enable live auto-archive there and add each replay URL after it becomes available."],
+      ["PDF and video storage", "PDFs use the private study-pdfs bucket with short-lived signed links. YouTube can automatically archive streams shorter than 12 hours; after processing, edit the live session and paste its replay URL. Automatic archive import is not configured."],
       ["Mobile store release", "Android/iOS signing, store listings and review are separate release steps; source compilation alone does not publish an app."]
     ]; items.forEach(([title, body], i) => { const item = node("article", "setup-item"); item.append(node("b", "", String(i + 1).padStart(2, "0"))); const copy = node("div"); copy.append(node("strong", "", title), node("p", "", body)); item.append(copy); list.append(item); }); setup.append(list); out.append(setup);
     const links = node("div", "hero-actions"); links.append(action("Open privacy policy", () => window.open("../privacy.html", "_blank", "noopener,noreferrer"), true), action("Sign out", () => db.auth.signOut(), true)); wrap.append(links);
