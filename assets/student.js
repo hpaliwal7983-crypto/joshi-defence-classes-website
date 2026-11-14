@@ -3,7 +3,7 @@
   const $ = (id) => document.getElementById(id);
   const config = window.JDC_CONFIG;
   const db = window.supabase?.createClient(config?.url || "", config?.publishableKey || "");
-  const state = { profile: null, batches: [], batchIds: [], view: "home", userId: "", attempt: null, questionIndex: 0, review: new Set(), timer: null, timeoutSent: false, unread: 0, reads: new Set(), busy: false, videoCleanup: [] };
+  const state = { profile: null, academySettings: {}, batches: [], batchIds: [], view: "home", userId: "", attempt: null, questionIndex: 0, review: new Set(), timer: null, timeoutSent: false, unread: 0, reads: new Set(), busy: false, videoCleanup: [] };
   let youtubeApiPromise = null;
   const views = {
     home: ["Home", "Your preparation, all in one place."], courses: ["My Courses", "Your enrolled defence batches."], live: ["Live Classes", "Upcoming and running academy classes."],
@@ -25,6 +25,19 @@
     $("studentPageSubtitle").textContent = views[view]?.[1] || "Your preparation, all in one place.";
   }
   function countsBadge() { const badge = $("unreadBadge"); if (!badge) return; badge.textContent = String(state.unread); badge.classList.toggle("hidden", !state.unread); }
+  function applyAcademyBranding() {
+    const name = state.academySettings.academy_name || "JOSHI DEFENCE CLASSES";
+    document.querySelectorAll("[data-academy-name]").forEach((el) => { el.textContent = name; });
+    const logoUrl = state.academySettings.logo_url;
+    if (!logoUrl) { document.querySelectorAll(".brand-mark.has-academy-logo").forEach((mark) => { mark.replaceChildren("JDC"); mark.classList.remove("has-academy-logo"); }); return; }
+    let parsed; try { parsed = new URL(logoUrl); } catch { return; }
+    if (parsed.protocol !== "https:") return;
+    document.querySelectorAll(".brand-mark").forEach((mark) => {
+      const img = node("img", "academy-logo-image"); img.src = parsed.href; img.alt = "";
+      img.addEventListener("error", () => { mark.replaceChildren("JDC"); mark.classList.remove("has-academy-logo"); }, { once: true });
+      mark.replaceChildren(img); mark.classList.add("has-academy-logo");
+    });
+  }
   function cleanupVideoPlayers() { for (const cleanup of state.videoCleanup.splice(0)) { try { cleanup(); } catch {} } }
   function nav(view) { if (!views[view]) return; cleanupVideoPlayers(); state.view = view; if (state.timer) { clearInterval(state.timer); state.timer = null; } setActiveNav(view); render(view); }
   async function checked(query) { const { data, error } = await query; if (error) throw error; return data || []; }
@@ -38,6 +51,7 @@
       if (error) throw error;
       if (!data || data.role !== "student" || data.is_active !== true) throw new Error("This login does not have an active student account. Please contact your academy administrator.");
       state.profile = data;
+      try { const settings = await checked(db.from("academy_settings").select("academy_name,tagline,support_email,support_phone,logo_url").eq("id", true)); state.academySettings = settings[0] || {}; applyAcademyBranding(); } catch (error) { console.warn("Academy profile settings are unavailable:", error.message); }
       $("loginScreen").classList.add("hidden"); $("studentApp").classList.remove("hidden");
       $("studentAvatar").textContent = initials(data.full_name || "Student");
       await loadBatches();
@@ -52,8 +66,8 @@
   }
   async function loadBatches() {
     const rows = await checked(db.from("enrollments").select("batch_id,batches(id,name,description,is_active,course_id,lead_faculty_id)").eq("student_id", state.profile.id));
-    state.batches = rows.map((row) => row.batches).filter(Boolean);
-    state.batchIds = [...new Set(rows.map((row) => row.batch_id).filter(Boolean))];
+    state.batches = rows.map((row) => row.batches).filter((batch) => batch?.is_active === true);
+    state.batchIds = [...new Set(state.batches.map((batch) => batch.id).filter(Boolean))];
   }
   async function contentRows(table, fields, filters = []) {
     if (!state.batchIds.length) return [];
@@ -276,7 +290,10 @@
     const form = node("form", "surface surface-pad screen-section"); form.append(node("h2", "", "Edit profile")); const wrap = node("div", "form-field"); const label = node("label", "", "Student name"); label.htmlFor = "studentName"; const input = node("input"); input.id = "studentName"; input.value = state.profile.full_name || ""; input.required = true; input.maxLength = 100; wrap.append(label, input); const save = node("button", "btn", "Save profile"); save.type = "submit"; form.append(wrap, save);
     form.addEventListener("submit", async (event) => { event.preventDefault(); const name = input.value.trim(); if (name.length < 2) return setStatus("studentMessage", "Enter your name.", "error"); save.disabled = true; try { const { data, error } = await db.from("profiles").update({ full_name: name }).eq("id", state.profile.id).select("id,full_name,phone,role,is_active").single(); if (error) throw error; state.profile = data; $("studentAvatar").textContent = initials(name); setStatus("studentMessage", "Profile saved.", "success"); out.replaceChildren(); await profilePage(out); } catch (error) { setStatus("studentMessage", error.message || "Could not save profile.", "error"); } finally { save.disabled = false; } });
     details.append(form); out.append(details);
-    const help = surface("Help & Support"); help.append(cardRow("Contact the academy", "Ask your batch administrator for help with account or access.", "☎")); out.append(help);
+    const help = surface("Help & Support"); const settings = state.academySettings; const academyName = settings.academy_name || "the academy";
+    if (settings.support_email) { const link = node("a", "btn btn-quiet", "Email support"); link.href = `mailto:${settings.support_email}`; help.append(cardRow(academyName, settings.support_email, "✉", "SUPPORT", link)); }
+    if (settings.support_phone) { const link = node("a", "btn btn-quiet", "Call support"); link.href = `tel:${settings.support_phone.replace(/[^+\d]/g, "")}`; help.append(cardRow("Academy phone", settings.support_phone, "☎", "SUPPORT", link)); }
+    if (!settings.support_email && !settings.support_phone) help.append(cardRow("Contact the academy", `Ask your batch administrator for help with ${academyName} account or access.`, "☎")); out.append(help);
   }
   async function render(view) {
     cleanupVideoPlayers();
@@ -305,7 +322,7 @@
     finally { button.disabled = false; button.textContent = "Verify and sign in"; }
   });
   $("changeNumberButton").addEventListener("click", () => { $("otpForm").classList.add("hidden"); $("otpInput").value = ""; setStatus("loginMessage", "Enter the registered mobile number again."); });
-  $("signOutButton").addEventListener("click", async () => { if (state.timer) clearInterval(state.timer); await db.auth.signOut(); state.profile = null; state.userId = ""; state.attempt = null; $("studentApp").classList.add("hidden"); $("loginScreen").classList.remove("hidden"); $("otpForm").classList.add("hidden"); $("phoneInput").value = ""; $("otpInput").value = ""; });
+  $("signOutButton").addEventListener("click", async () => { if (state.timer) clearInterval(state.timer); await db.auth.signOut(); state.profile = null; state.academySettings = {}; state.userId = ""; state.attempt = null; $("studentApp").classList.add("hidden"); $("loginScreen").classList.remove("hidden"); $("otpForm").classList.add("hidden"); $("phoneInput").value = ""; $("otpInput").value = ""; });
   document.querySelectorAll("[data-view]").forEach((element) => element.addEventListener("click", () => nav(element.dataset.view)));
   if (db) { db.auth.onAuthStateChange((_event, session) => { if (session?.user) void loadIdentity(session.user); else if (!$("studentApp").classList.contains("hidden")) { state.profile = null; state.userId = ""; $("studentApp").classList.add("hidden"); $("loginScreen").classList.remove("hidden"); } }); db.auth.getSession().then(({ data }) => { if (data.session?.user) void loadIdentity(data.session.user); }).catch(() => {}); }
 })();

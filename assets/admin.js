@@ -3,7 +3,7 @@
   const $ = (id) => document.getElementById(id);
   const cfg = window.JDC_CONFIG;
   const db = window.supabase?.createClient(cfg?.url || "", cfg?.publishableKey || "");
-  const state = { profile: null, view: "dashboard", contentTab: "classes", testTab: "series", noticeTab: "announcements", rows: [], refs: { batches: [], subjects: [], tests: [], categories: [], courses: [], chapters: [], faculty: [] }, busy: false };
+  const state = { profile: null, academySettings: {}, view: "dashboard", contentTab: "classes", testTab: "series", noticeTab: "announcements", rows: [], refs: { batches: [], subjects: [], tests: [], categories: [], courses: [], chapters: [], faculty: [] }, busy: false };
   const titles = { dashboard: ["Admin Dashboard", "Your academy overview."], students: ["Student Management", "Create accounts, assign batches and manage access."], batches: ["Batch Management", "Organize students into academy batches."], content: ["Content Management", "Manage categories, courses, faculty, chapters and lessons."], tests: ["Test Series", "Author MCQs, publish tests and review results."], notifications: ["Notifications & Questions", "Publish academy notices and review private student questions."], more: ["Settings & Help", "Account and service configuration." ] };
   const contentTabs = [["exam_categories", "Exams"], ["courses", "Courses"], ["subjects", "Subjects"], ["chapters", "Chapters"], ["faculty", "Faculty"], ["classes", "Recorded"], ["live_sessions", "Live Classes"], ["study_pdfs", "Study PDFs"]];
 
@@ -17,7 +17,23 @@
   async function invoke(actionName, table, id = null, data = null) { const { data: result, error } = await db.functions.invoke("admin-manage-data", { body: { action: actionName, table, ...(id ? { id } : {}), ...(data ? { data } : {}) } }); if (error) throw error; if (result?.error) throw new Error(result.error); return result || {}; }
   async function list(table) { const result = await invoke("list", table); return result.data || []; }
   function showLogin(message = "", kind = "") { $("adminApp").classList.add("hidden"); $("adminLoginScreen").classList.remove("hidden"); $("adminPublicHeader").classList.remove("hidden"); $("adminLoginMessage").textContent = message; $("adminLoginMessage").className = `status${kind ? ` ${kind}` : ""}`; }
-  function showAdmin() { $("adminLoginScreen").classList.add("hidden"); $("adminApp").classList.remove("hidden"); $("adminPublicHeader").classList.add("hidden"); const init = initials(state.profile?.full_name || "Admin"); $("adminAvatar").textContent = init; $("adminWorkspaceAvatar").textContent = init; void render("dashboard"); }
+  function applyAcademyBranding(settings) {
+    const name = settings.academy_name || "JOSHI DEFENCE CLASSES";
+    document.querySelectorAll("[data-academy-name]").forEach((el) => { el.textContent = name; });
+    if (!settings.logo_url) { document.querySelectorAll(".brand-mark.has-academy-logo").forEach((mark) => { mark.replaceChildren("JDC"); mark.classList.remove("has-academy-logo"); }); return; }
+    let parsed; try { parsed = new URL(settings.logo_url); } catch { return; }
+    if (parsed.protocol !== "https:") return;
+    document.querySelectorAll(".brand-mark").forEach((mark) => {
+      const img = node("img", "academy-logo-image"); img.src = parsed.href; img.alt = "";
+      img.addEventListener("error", () => { mark.replaceChildren("JDC"); mark.classList.remove("has-academy-logo"); }, { once: true });
+      mark.replaceChildren(img); mark.classList.add("has-academy-logo");
+    });
+  }
+  async function showAdmin() {
+    $("adminLoginScreen").classList.add("hidden"); $("adminApp").classList.remove("hidden"); $("adminPublicHeader").classList.add("hidden"); const init = initials(state.profile?.full_name || "Admin"); $("adminAvatar").textContent = init; $("adminWorkspaceAvatar").textContent = init;
+    try { const [settings] = await list("academy_settings"); state.academySettings = settings || {}; applyAcademyBranding(state.academySettings); } catch (error) { console.warn("Academy settings could not load:", error.message); }
+    void render("dashboard");
+  }
   async function validateSession(user) {
     if (!user) return showLogin();
     try { const { data, error } = await db.from("profiles").select("id,full_name,role,is_active").eq("id", user.id).maybeSingle(); if (error) throw error; if (data?.role !== "admin" || data.is_active !== true) { await db.auth.signOut(); return showLogin("This account does not have active administrator access.", "error"); } state.profile = data; showAdmin(); }
@@ -179,17 +195,44 @@
   async function announcementsView(parent) { const announcements = await list("announcements"); const reads = await list("notification_reads").catch(() => []); const readCount = new Map(); reads.forEach((x) => readCount.set(x.announcement_id, (readCount.get(x.announcement_id) || 0) + 1)); const section = node("section", "surface surface-pad"); toolbar(section, "Academy Notices", "＋ New announcement", () => editRecord("announcements")); if (!announcements.length) empty(section, "No announcements", "Publish a notice to notify students in a batch or the whole academy."); announcements.forEach((x) => { const future = x.scheduled_at && Date.parse(x.scheduled_at) > Date.now(); const status = x.is_published ? future ? "SCHEDULED" : "PUBLISHED" : "DRAFT"; section.append(cardRow(x.title, `${x.target_batch_id ? refsBatchName(x.target_batch_id) : "All students"} · ${readCount.get(x.id) || 0} marked read · ${x.scheduled_at ? fmt(x.scheduled_at) : fmt(x.created_at)}`, "♧", status, [action("Edit", () => editRecord("announcements", x), true), action("Delete", () => deleteRecord("announcements", x), true)])); }); parent.append(section); }
   async function commentsView(parent) { const rows = await list("live_session_comments"); const [sessions, students] = await Promise.all([list("live_sessions"), list("profiles")]); const smap = new Map(sessions.map((x) => [x.id, x.title])); const pmap = new Map(students.map((x) => [x.id, x.full_name || x.phone || "Student"])); const section = node("section", "surface surface-pad"); section.append(node("h2", "", "Private Live Class Questions")); if (!rows.length) empty(section, "No private questions", "Student messages sent during a live class appear here for administrators only."); rows.forEach((x) => section.append(cardRow(pmap.get(x.student_id) || "Student", `${smap.get(x.live_session_id) || "Live class"} · ${fmt(x.created_at)} · ${x.message}`, "✉", "ADMIN ONLY"))); parent.append(section); }
   async function notificationsView(out) { const wrap = node("section", "surface surface-pad"); tabs(wrap, [["announcements", "Announcements"], ["comments", "Live Questions"]], state.noticeTab, (v) => setView("notifications", v)); try { await references(); if (state.noticeTab === "comments") await commentsView(wrap); else await announcementsView(wrap); } catch (error) { empty(wrap, "Could not load notices", error.message); } out.append(wrap); }
-  function moreView(out) { const wrap = node("section", "surface surface-pad"); wrap.append(node("h2", "", "Account & Integration Setup")); const list = node("div", "setup-list"); const items = [
-    ["Student SMS OTP", "Set up an SMS provider under Supabase Auth → Providers → Phone. Until configured, real OTP delivery cannot be verified."],
-    ["Admin recovery email", "Password reset requires a configured email sender and an allowed Supabase Auth redirect URL."],
-    ["Live and recorded video", "Use YouTube Live for broadcasts and enable auto-archive in YouTube. After a class ends, add the archive URL as its replay."],
-    ["Private study PDFs", "Uploaded files stay in the private study-pdfs bucket and are shared to enrolled students through short-lived signed links."],
-    ["Mobile app release", "Configure app signing, privacy declarations and store review in Play Console / App Store Connect when the mobile builds are ready."]
-  ]; items.forEach(([title, body], i) => { const item = node("article", "setup-item"); item.append(node("b", "", String(i + 1).padStart(2, "0"))); const copy = node("div"); copy.append(node("strong", "", title), node("p", "", body)); item.append(copy); list.append(item); }); wrap.append(list); const links = node("div", "hero-actions"); links.append(action("Open privacy policy", () => window.open("../privacy.html", "_blank", "noopener,noreferrer"), true), action("Sign out", () => db.auth.signOut(), true)); wrap.append(links); out.append(wrap); }
+  async function moreView(out) {
+    const wrap = node("section", "surface surface-pad"); wrap.append(node("h2", "", "Academy Settings"));
+    const [settings] = await list("academy_settings"); const row = settings || {};
+    const form = node("form", "form-grid screen-section");
+    const academyName = fieldInput(form, "Academy name", "text", true); academyName.maxLength = 120; academyName.value = row.academy_name || "JOSHI DEFENCE CLASSES";
+    const tagline = fieldInput(form, "Brand tagline", "text", true); tagline.maxLength = 180; tagline.value = row.tagline || "YOUR DREAM · OUR MISSION";
+    const supportEmail = fieldInput(form, "Support email", "email", false); supportEmail.maxLength = 254; supportEmail.value = row.support_email || "";
+    const supportPhone = fieldInput(form, "Support phone", "tel", false); supportPhone.maxLength = 32; supportPhone.value = row.support_phone || "";
+    const logoUrl = fieldInput(form, "Public logo URL (optional)", "url", false, "https://…"); logoUrl.maxLength = 1000; logoUrl.value = row.logo_url || "";
+    const logoPreview = node("img", "academy-logo-preview"); logoPreview.alt = "Academy logo preview"; logoPreview.hidden = !row.logo_url; if (row.logo_url) logoPreview.src = row.logo_url; form.append(logoPreview);
+    logoUrl.addEventListener("input", () => { try { const url = new URL(logoUrl.value.trim()); logoPreview.hidden = url.protocol !== "https:"; logoPreview.src = url.protocol === "https:" ? url.href : ""; } catch { logoPreview.hidden = true; logoPreview.removeAttribute("src"); } });
+    const note = node("p", "small muted", "These academy details are visible to signed-in users. Never enter passwords, provider credentials or service-role keys here."); form.append(note);
+    const save = node("button", "btn", "Save academy settings"); save.type = "submit"; form.append(save);
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault(); if (!form.reportValidity()) return; save.disabled = true; setMessage("Saving academy settings…");
+      try {
+        if (logoUrl.value.trim() && new URL(logoUrl.value.trim()).protocol !== "https:") throw new Error("Use an HTTPS logo URL.");
+        const updated = { academy_name: academyName.value.trim(), tagline: tagline.value.trim(), support_email: supportEmail.value.trim() || null, support_phone: supportPhone.value.trim() || null, logo_url: logoUrl.value.trim() || null, updated_at: new Date().toISOString() };
+        await invoke("update", "academy_settings", "true", updated); state.academySettings = updated; applyAcademyBranding(updated);
+        setMessage("Academy settings saved.", "success");
+      } catch (error) { setMessage(error.message || "Could not save academy settings.", "error"); }
+      finally { save.disabled = false; }
+    });
+    wrap.append(form); out.append(wrap);
+    const setup = node("section", "surface surface-pad screen-section"); setup.append(node("h2", "", "Security & Service Setup")); const list = node("div", "setup-list"); const items = [
+      ["Account permissions", "One owner admin can manage the academy. Student records and content are restricted by active account and assigned batch."],
+      ["Student SMS OTP", "Real SMS delivery requires an SMS provider configured under Supabase Auth → Providers → Phone."],
+      ["Password reset email", "Admin recovery requires a configured email sender and an allowed Supabase Auth redirect URL."],
+      ["Notifications", "Published and scheduled notices appear in the student app. SMS and push notifications need a separately configured delivery provider."],
+      ["PDF and video storage", "PDFs use the private study-pdfs bucket with short-lived signed links. Classes use YouTube; enable live auto-archive there and add each replay URL after it becomes available."],
+      ["Mobile store release", "Android/iOS signing, store listings and review are separate release steps; source compilation alone does not publish an app."]
+    ]; items.forEach(([title, body], i) => { const item = node("article", "setup-item"); item.append(node("b", "", String(i + 1).padStart(2, "0"))); const copy = node("div"); copy.append(node("strong", "", title), node("p", "", body)); item.append(copy); list.append(item); }); setup.append(list); out.append(setup);
+    const links = node("div", "hero-actions"); links.append(action("Open privacy policy", () => window.open("../privacy.html", "_blank", "noopener,noreferrer"), true), action("Sign out", () => db.auth.signOut(), true)); wrap.append(links);
+  }
 
   async function render(view) {
     const out = $("adminPageContent"); if (!out || !state.profile) return; out.replaceChildren(); setMessage(); const loading = node("div", "empty-state"); loading.append(node("span", "", "Loading academy records…")); out.append(loading);
-    try { out.replaceChildren(); if (view === "dashboard") await dashboard(out); else if (view === "students") await studentsView(out); else if (view === "batches") await batchesView(out); else if (view === "content") await contentView(out); else if (view === "tests") await testsView(out); else if (view === "notifications") await notificationsView(out); else moreView(out); }
+    try { out.replaceChildren(); if (view === "dashboard") await dashboard(out); else if (view === "students") await studentsView(out); else if (view === "batches") await batchesView(out); else if (view === "content") await contentView(out); else if (view === "tests") await testsView(out); else if (view === "notifications") await notificationsView(out); else await moreView(out); }
     catch (error) { out.replaceChildren(); empty(out, "Could not load this section", error.message || "Check the administrator session and try again."); setMessage(error.message || "A request failed.", "error"); }
   }
   $("adminLoginForm").addEventListener("submit", async (event) => { event.preventDefault(); const email = $("adminEmail").value.trim(), password = $("adminPassword").value; if (!db) return showLogin("Login service did not load. Refresh and try again.", "error"); const button = $("adminLoginButton"); button.disabled = true; button.textContent = "Signing in…"; try { const { data, error } = await db.auth.signInWithPassword({ email, password }); if (error) throw error; await validateSession(data.user); } catch (error) { showLogin(error.message || "Could not sign in.", "error"); } finally { button.disabled = false; button.innerHTML = 'Sign in securely <span aria-hidden="true">→</span>'; } });
