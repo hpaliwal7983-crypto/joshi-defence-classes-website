@@ -6,7 +6,7 @@
   const state = { profile: null, academySettings: {}, batches: [], batchIds: [], view: "home", userId: "", attempt: null, questionIndex: 0, review: new Set(), timer: null, timeoutSent: false, unread: 0, reads: new Set(), busy: false, videoCleanup: [] };
   let youtubeApiPromise = null;
   const views = {
-    home: ["Home", "Your preparation, all in one place."], courses: ["My Courses", "Your enrolled defence batches."], live: ["Live Classes", "Upcoming and running academy classes."],
+    home: ["Home", "Your preparation, all in one place."], courses: ["My Courses", "Your enrolled defence batches."], payments: ["Buy a Batch", "Choose a batch and request access after UPI payment."], live: ["Live Classes", "Upcoming and running academy classes."],
     recorded: ["Recorded Classes", "Revisit lessons shared with your batch."], pdfs: ["Study Material", "Your batch notes and learning PDFs."], tests: ["Test Series", "Take timed tests and track your scores."],
     results: ["My Results", "Your submitted test attempts and performance."], notifications: ["Notifications", "Announcements from your academy."], profile: ["My Profile", "Your student account and learning progress."]
   };
@@ -115,7 +115,7 @@
     const actions = node("div", "hero-actions"); actions.append(btn("Live classes", () => nav("live")), btn("Study material", () => nav("pdfs"), true)); first.append(actions); out.append(first);
     const completed = progress.filter((item) => item.completed_at).length; const progressPercent = classes.length ? Math.round(completed / classes.length * 100) : 0;
     const stats = node("div", "four-metrics"); stats.append(metric("Live / upcoming", live.length, "◉"), metric("Recorded lessons", classes.length, "▶"), metric("Study PDFs", pdfs.length, "▤"), metric("Tests attempted", resultData.data?.length || 0, "▣"), metric("Learning progress", `${progressPercent}%`, "✓")); out.append(stats);
-    const access = surface("Quick Access"); access.classList.add("screen-section"); const grid = node("div", "feature-cards"); grid.append(quickLink("Live Classes", `${live.length} available`, "◉", "live"), quickLink("Recorded Classes", `${classes.length} lessons`, "▶", "recorded"), quickLink("Study Material", `${pdfs.length} PDFs`, "▤", "pdfs"), quickLink("Test Series", `${testData.data?.length || 0} tests`, "▣", "tests"), quickLink("My Results", `${resultData.data?.length || 0} attempts`, "🏆", "results"), quickLink("Notifications", `${state.unread} unread`, "♧", "notifications")); access.append(grid); out.append(access);
+    const access = surface("Quick Access"); access.classList.add("screen-section"); const grid = node("div", "feature-cards"); grid.append(quickLink("Live Classes", `${live.length} available`, "◉", "live"), quickLink("Recorded Classes", `${classes.length} lessons`, "▶", "recorded"), quickLink("Study Material", `${pdfs.length} PDFs`, "▤", "pdfs"), quickLink("Test Series", `${testData.data?.length || 0} tests`, "▣", "tests"), quickLink("My Results", `${resultData.data?.length || 0} attempts`, "🏆", "results"), quickLink("Buy a Batch", "UPI & approval status", "₹", "payments"), quickLink("Notifications", `${state.unread} unread`, "♧", "notifications")); access.append(grid); out.append(access);
     const upcoming = live.slice(0, 3); const liveSection = surface("Upcoming Classes"); liveSection.classList.add("screen-section");
     if (!upcoming.length) empty(liveSection, "No upcoming classes", "Your administrator’s published schedule will appear here.");
     else for (const row of upcoming) liveSection.append(cardRow(row.title, fmt(row.scheduled_start), "◉", row.status === "live" ? "LIVE" : "UPCOMING", btn(row.status === "live" ? "Join now" : "Details", () => nav("live"))));
@@ -127,7 +127,7 @@
       checked(db.from("exam_categories").select("id,name,description,position").eq("is_active", true).order("position")),
       checked(db.from("courses").select("id,name,description,exam_category_id,is_active").eq("is_active", true).order("name"))
     ]);
-    const catalog = surface("Defence Preparation"); const tabs = node("div", "admin-tabs"); let selected = "all"; const courseBox = node("div", "course-grid");
+    const catalog = surface("Defence Preparation"); const buyActions = node("div", "hero-actions"); buyActions.append(btn("Browse batches & UPI payment", () => nav("payments"))); catalog.append(buyActions); const tabs = node("div", "admin-tabs"); let selected = "all"; const courseBox = node("div", "course-grid");
     const draw = () => {
       tabs.replaceChildren();
       [["all", "All"], ...categories.map((x) => [x.id, x.name])].forEach(([id, label]) => tabs.append(btn(label, () => { selected = id; draw(); }, selected !== id)));
@@ -141,6 +141,49 @@
     else for (const batch of state.batches) wrap.append(cardRow(batch.name || "Batch", batch.description || "Academy preparation batch", "♜", batch.is_active === false ? "INACTIVE" : "ACTIVE"));
     out.append(wrap);
     const access = surface("Learning Access"); access.classList.add("screen-section"); const grid = node("div", "feature-cards"); grid.append(quickLink("Live Classes", "Join your batch", "◉", "live"), quickLink("Recorded Classes", "Watch lessons", "▶", "recorded"), quickLink("Study Material", "Open PDFs", "▤", "pdfs")); access.append(grid); out.append(access);
+  }
+  async function paymentsPage(out) {
+    const wrap = surface("Buy a Batch · UPI");
+    wrap.append(node("p", "small muted", "Pay the fee shown for the batch, then submit the UPI transaction reference. The administrator checks the payment before batch access is added."));
+    let settings = {}, batches = [], requests = [];
+    try {
+      const [settingRows, batchRows, paymentRows] = await Promise.all([
+        checked(db.from("payment_settings").select("id,upi_vpa,payee_name,qr_storage_path,instructions").eq("id", true)),
+        checked(db.from("batches").select("id,name,description,price_inr,is_purchasable,is_active,course_id").eq("is_active", true).eq("is_purchasable", true).order("name")),
+        checked(db.from("manual_payment_requests").select("id,batch_id,amount_inr,payment_reference,status,admin_note,created_at,reviewed_at").eq("student_id", state.profile.id).order("created_at", { ascending: false }))
+      ]);
+      settings = settingRows[0] || {}; requests = paymentRows;
+      batches = batchRows.filter((batch) => !state.batchIds.includes(batch.id) && Number(batch.price_inr) > 0);
+    } catch (error) { empty(wrap, "Payment details unavailable", error.message || "The academy payment setup has not been enabled yet."); out.append(wrap); return; }
+    if (settings.qr_storage_path && settings.upi_vpa) {
+      const qr = node("div", "payment-qr-panel");
+      let image;
+      if (window.JDC_DEMO_MODE) { image = node("div", "payment-qr-image demo-payment-mark"); image.append(node("strong", "", "DEMO"), node("b", "", "NOT PAYABLE"), node("span", "small", "Payment screen preview only")); }
+      else { image = node("img", "payment-qr-image"); image.src = "../assets/payment-qr.jpg"; image.alt = `UPI payment QR for ${settings.payee_name || "Joshi Defence Classes"}`; image.loading = "lazy"; }
+      const copy = node("div", "payment-qr-copy"); copy.append(node("span", "eyebrow", window.JDC_DEMO_MODE ? "UPI PAYMENT PREVIEW" : "SCAN WITH ANY UPI APP"), node("strong", "", settings.payee_name || "Joshi Defence Classes"), node("code", "", settings.upi_vpa), node("span", "small muted", settings.instructions || "Pay the exact batch fee and submit the transaction reference.")); qr.append(image, copy); wrap.append(qr);
+    } else empty(wrap, "UPI QR is not configured", "The administrator must add the academy QR and UPI ID before students can send payment requests.");
+    const catalog = surface("Available Batches"); catalog.classList.add("screen-section");
+    if (!batches.length) empty(catalog, "No batch is open for purchase", "The academy administrator must set the batch fee and enable purchase. Existing batches remain available in My Batches.");
+    for (const batch of batches) {
+      const card = node("article", "purchase-card"); const details = node("div"); details.append(node("span", "eyebrow", "ONE-TIME BATCH FEE"), node("h3", "", batch.name), node("p", "small muted", batch.description || "Batch access begins after payment review."), node("strong", "purchase-price", `₹${Number(batch.price_inr).toLocaleString("en-IN")}`));
+      let pay;
+      if (window.JDC_DEMO_MODE) { pay = node("button", "btn btn-quiet", "UPI disabled in preview"); pay.type = "button"; pay.disabled = true; }
+      else if (settings.upi_vpa && settings.qr_storage_path) { pay = node("a", "btn btn-quiet", "Pay with UPI app"); const uri = new URLSearchParams({ pa: settings.upi_vpa, pn: settings.payee_name || "Joshi Defence Classes", am: String(Number(batch.price_inr)), cu: "INR", tn: `JDC ${batch.name}` }); pay.href = `upi://pay?${uri}`; pay.setAttribute("aria-label", `Pay ₹${Number(batch.price_inr).toLocaleString("en-IN")} for ${batch.name} using a UPI app`); }
+      else { pay = node("button", "btn btn-quiet", "UPI details not configured"); pay.type = "button"; pay.disabled = true; }
+      details.append(pay); card.append(details);
+      const form = node("form", "payment-request-form");
+      const field = (title, type, idValue, placeholder = "") => { const box = node("div", "form-field"); const label = node("label", "", title); const input = node("input"); input.id = idValue; label.htmlFor = idValue; input.type = type; input.placeholder = placeholder; box.append(label, input); return { box, input }; };
+      const ref = field("UPI transaction reference / UTR", "text", `utr-${batch.id}`, "Transaction ID from your UPI app"); ref.input.required = true; ref.input.minLength = 8; ref.input.maxLength = 64; ref.input.autocomplete = "off";
+      const payer = field("Payer name (optional)", "text", `payer-${batch.id}`); payer.input.maxLength = 120; payer.input.autocomplete = "name";
+      const submit = node("button", "btn", "Send for admin approval"); submit.type = "submit"; const status = node("span", "small muted"); form.append(ref.box, payer.box, submit, status);
+      form.addEventListener("submit", async (event) => { event.preventDefault(); if (!form.reportValidity()) return; submit.disabled = true; status.textContent = "Submitting transaction reference…"; try { await invoke("student-manual-payment", { batch_id: batch.id, payment_reference: ref.input.value.trim(), payer_name: payer.input.value.trim() || null }); await render("payments"); setStatus("studentMessage", "Request sent. Batch access appears after the administrator approves it.", "success"); } catch (error) { status.textContent = error.message || "Could not submit the payment request."; submit.disabled = false; } });
+      card.append(form); catalog.append(card);
+    }
+    out.append(catalog);
+    const history = surface("My Payment Requests"); history.classList.add("screen-section");
+    if (!requests.length) empty(history, "No payment requests yet", "Your submitted UPI references and admin decisions will appear here.");
+    for (const request of requests) { const batch = state.batches.find((x) => x.id === request.batch_id)?.name || batches.find((x) => x.id === request.batch_id)?.name || "Batch"; const detail = `₹${Number(request.amount_inr).toLocaleString("en-IN")} · UTR ${request.payment_reference} · ${fmt(request.created_at)}${request.admin_note ? ` · Admin: ${request.admin_note}` : ""}`; history.append(cardRow(batch, detail, "₹", request.status.toUpperCase())); }
+    out.append(history);
   }
   function youtubeId(raw) {
     try { const u = new URL(raw); let id = u.hostname.includes("youtu.be") ? u.pathname.slice(1) : u.searchParams.get("v"); if (!id && /\/(?:live|embed)\//.test(u.pathname)) id = u.pathname.split("/").filter(Boolean).at(-1); return /^[\w-]{11}$/.test(id || "") ? id : null; } catch { return null; }
@@ -223,7 +266,7 @@
   async function pdfPage(out) {
     const rows = await contentRows("study_pdfs", "id,title,batch_id,subject_id,status,created_at", [["eq", ["status", "published"]], ["order", ["created_at", { ascending: false }]]]);
     const wrap = surface("Study Material"); const search = node("input", "search"); search.placeholder = "Search PDFs"; search.setAttribute("aria-label", "Search study PDFs"); wrap.append(search); const list = node("div", "list"); wrap.append(list);
-    const paint = () => { list.replaceChildren(); const found = rows.filter((r) => `${r.title}`.toLowerCase().includes(search.value.toLowerCase())); if (!found.length) return empty(list, "No PDFs available", "Published study material for your batch will appear here."); for (const row of found) { const open = btn("Open PDF", async () => { const tab = window.open("about:blank", "_blank", "noopener,noreferrer"); try { const data = await invoke("student-pdf-link", { pdf_id: row.id }); if (!data.signed_url) throw new Error("Secure PDF link was not returned."); if (tab) tab.location = data.signed_url; else openSafeUrl(data.signed_url); } catch (error) { if (tab) tab.close(); setStatus("studentMessage", error.message || "Could not open PDF.", "error"); } }, true); list.append(cardRow(row.title, "PDF · Secure batch access", "▤", "PDF", open)); } };
+    const paint = () => { list.replaceChildren(); const found = rows.filter((r) => `${r.title}`.toLowerCase().includes(search.value.toLowerCase())); if (!found.length) return empty(list, "No PDFs available", "Published study material for your batch will appear here."); for (const row of found) { const open = btn("Open PDF", async () => { const tab = window.open("about:blank", "_blank"); if (tab) tab.opener = null; try { const data = await invoke("student-pdf-link", { pdf_id: row.id }); if (!data.signed_url) throw new Error("Secure PDF link was not returned."); if (tab) tab.location.href = data.signed_url; else window.location.assign(data.signed_url); } catch (error) { if (tab) tab.close(); setStatus("studentMessage", error.message || "Could not open PDF.", "error"); } }, true); list.append(cardRow(row.title, "PDF · Secure batch access", "▤", "PDF", open)); } };
     search.addEventListener("input", paint); paint(); out.append(wrap);
   }
   async function testPage(out) {
@@ -300,7 +343,7 @@
     const out = $("studentPageContent"); if (!out || !state.profile) return; out.replaceChildren(); setStatus("studentMessage");
     const loading = node("div", "empty-state"); loading.append(node("div", "", "Loading your academy data…")); out.append(loading);
     try {
-      const pages = { home: homePage, courses: coursesPage, live: livePage, recorded: recordedPage, pdfs: pdfPage, tests: testPage, results: resultsPage, notifications: notificationPage, profile: profilePage };
+      const pages = { home: homePage, courses: coursesPage, payments: paymentsPage, live: livePage, recorded: recordedPage, pdfs: pdfPage, tests: testPage, results: resultsPage, notifications: notificationPage, profile: profilePage };
       await (pages[view] || homePage)(out);
     } catch (error) { showError(out, "Could not load this section", error.message || "Refresh the page or contact your academy administrator."); setStatus("studentMessage", error.message || "A request failed.", "error"); }
   }

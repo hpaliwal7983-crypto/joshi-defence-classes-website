@@ -26,6 +26,8 @@
           <button class="btn" id="adminLoginButton" type="submit">Sign in securely <span aria-hidden="true">→</span></button>
           <button class="text-link" id="resetPasswordButton" type="button">Forgot password?</button>
         </form>
+        <a class="btn btn-quiet preview-login" href="?demo=admin">Open admin preview</a>
+        <p class="small preview-note">Preview contains isolated sample records. It cannot access or change the live academy.</p>
         <div class="status" id="adminLoginMessage" role="status" aria-live="polite"></div>
         <p class="small" style="margin:6px 0 0">Admin accounts are not created from this page.</p><div class="login-footer"><a href="../">Welcome</a> · <a href="../privacy.html">Privacy</a></div>
       </section></div>
@@ -42,6 +44,7 @@
             <button class="nav-link" data-admin-view="content"><span class="nav-icon">▶</span>Content</button>
             <button class="nav-link" data-admin-view="tests"><span class="nav-icon">▣</span>Test series</button>
             <button class="nav-link" data-admin-view="notifications"><span class="nav-icon">♧</span>Notifications</button>
+            <button class="nav-link" data-admin-view="payments"><span class="nav-icon">₹</span>Payments</button>
             <button class="nav-link" data-admin-view="more"><span class="nav-icon">⚙</span>Settings & help</button>
           </nav>
           <div class="sidebar-spacer"></div><button class="nav-link" id="adminSignOut"><span class="nav-icon">↪</span>Sign out</button>
@@ -56,12 +59,14 @@
         <button class="nav-link active" data-admin-view="dashboard"><span class="nav-icon">▦</span>Dashboard</button>
         <button class="nav-link" data-admin-view="students"><span class="nav-icon">♟</span>Students</button>
         <button class="nav-link" data-admin-view="content"><span class="nav-icon">▶</span>Content</button>
+        <button class="nav-link" data-admin-view="payments"><span class="nav-icon">₹</span>Payments</button>
         <button class="nav-link" data-admin-view="more"><span class="nav-icon">•••</span>More</button>
       </nav>
     </section>
   </main>
   <dialog id="adminDialog" class="admin-dialog" aria-labelledby="dialogTitle"><div class="dialog-shell"><header class="dialog-header"><h2 id="dialogTitle">Edit record</h2><button class="icon-btn" id="dialogClose" type="button" aria-label="Close dialog">×</button></header><div id="dialogContent"></div></div></dialog>
   <script src="../assets/supabase-client.js"></script>
+  <script src="../assets/demo-backend.js"></script>
   <script src="../assets/admin.js"></script>
 </body>
 </html>

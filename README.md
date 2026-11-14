@@ -5,8 +5,10 @@ Live website: https://hpaliwal7983-crypto.github.io/joshi-defence-classes-websit
 - Home: the public academy website
 - Student portal: /student/
 - Admin portal: /admin/
+- Student demo: /student/?demo=student
+- Admin demo: /admin/?demo=admin
 - Privacy notice: /privacy.html
 
-The site is static and hosted with GitHub Pages. The private application source repository remains separate.
+The student and admin demos use local sample records in the browser. You can try tests, PDFs, private live-class questions, and the owner approval workflow for a sample batch request. The QR in demo mode is marked NOT PAYABLE. No SMS, payment, or production database changes happen in demo mode; changes stay in that browser.
 
-Student accounts are created by the academy. Portal sign-in depends on Supabase Auth setup: the student portal needs an SMS provider, and the admin magic-link flow needs the website URL added to Supabase Auth's redirect allow list. This website does not collect web payments.
+Real accounts use Supabase Auth and the academy database. SMS OTP still depends on the academy's configured SMS provider. Production manual UPI requests require the payment migration and server functions to be deployed; an owner must verify each UTR in the payment app before approving access. The website does not process card or store billing.

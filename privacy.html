@@ -17,16 +17,19 @@
     <p>This notice explains how the Joshi Defence Classes website and student portal use information when students and academy administrators sign in and access learning content.</p>
     <h2>Information used by the portals</h2>
     <ul>
-      <li>Students enter their mobile number and a one-time password to sign in. Student accounts are created by the academy.</li>
+      <li>Students enter their registered mobile number and a one-time password to sign in. Student accounts are created by the academy.</li>
       <li>The single academy administrator enters an email address and password to sign in.</li>
-      <li>The portals use account details, batch enrollment and academy learning records to show the right classes, PDFs and announcements.</li>
+      <li>The portals use account details, batch enrollment and academy learning records to show the right classes, PDFs and announcements. Test answers and scores, lesson progress, and private questions sent during live classes are stored with the student account.</li>
+      <li>When manual UPI batch purchase is enabled, the student submits the UPI transaction reference and may enter a payer name. The academy records the requested batch, fee, review status and any administrator note. The website does not collect UPI PINs, card numbers or banking passwords.</li>
     </ul>
     <h2>How information is used</h2>
-    <p>Information is used to authenticate accounts, manage student enrollment, provide access to batch content, and operate the academy's learning services. The student portal only shows content for batches linked to the signed-in student's active account. The service records test attempts, saved answers and scores, notice read state, and lesson playback progress so students can resume learning and view results.</p>
+    <p>Information is used to authenticate accounts, manage student enrollment, provide access to batch content, and operate the academy's learning services. The student portal only shows content for batches linked to the signed-in student's active account. The service records test attempts, saved answers and scores, notice read state, lesson playback progress, and messages sent privately to the administrator.</p>
     <h2>Service providers and learning links</h2>
     <p>Authentication, database and private file services are provided through Supabase. Live and recorded video may open or play through YouTube. The web video player may save a student's lesson ID and watched position to resume playback. Those services process information under their own privacy terms.</p>
-    <h2>Learning access</h2>
-    <p>The current portals provide learning and administration features. They do not offer student checkout, wallet, subscription or payment processing.</p>
+    <h2>UPI batch requests</h2>
+    <p>Where enabled, a student can scan the academy's UPI QR in their UPI app and submit the transaction reference to request a one-time batch enrollment. This is a manual UPI transfer, not card checkout or automated payment verification. The academy administrator checks the payment in the UPI app and approves or rejects the request; batch access is added only after approval. The academy's UPI provider processes the transfer under its own terms.</p>
+    <h2>Preview mode</h2>
+    <p>Student and admin previews use sample records stored in that browser's local storage and IndexedDB. Preview changes do not reach the academy database. No OTP SMS or payment is sent or processed in preview mode.</p>
     <h2>Data access and account questions</h2>
     <p>Student accounts are managed by the academy. For account access, correction or deletion requests, contact the academy through the contact channel it gave you.</p>
     <h2>Contact</h2>

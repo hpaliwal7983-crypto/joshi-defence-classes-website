@@ -40,6 +40,8 @@
             <button class="btn" id="verifyOtpButton" type="submit">Verify and sign in</button>
             <button class="text-link resend-link" id="changeNumberButton" type="button">Change number</button>
           </form>
+          <a class="btn btn-quiet preview-login" href="?demo=student">Open student preview</a>
+          <p class="small preview-note">Preview includes sample classes, notes and tests. Changes stay in this browser.</p>
           <div class="status" id="loginMessage" role="status" aria-live="polite"></div>
           <p class="small" style="margin:8px 0 0">Student accounts are created by the academy administrator. This portal does not offer public sign-up.</p>
           <div class="login-footer"><a href="../">Welcome</a> · <a href="../privacy.html">Privacy</a></div>
@@ -53,6 +55,7 @@
           <nav class="side-nav" id="desktopNav">
             <button class="nav-link active" data-view="home"><span class="nav-icon">⌂</span>Home</button>
             <button class="nav-link" data-view="courses"><span class="nav-icon">♜</span>My batches</button>
+            <button class="nav-link" data-view="payments"><span class="nav-icon">₹</span>Buy a batch</button>
             <button class="nav-link" data-view="live"><span class="nav-icon">◉</span>Live classes</button>
             <button class="nav-link" data-view="recorded"><span class="nav-icon">▶</span>Recorded classes</button>
             <button class="nav-link" data-view="pdfs"><span class="nav-icon">▤</span>Study material</button>
@@ -80,6 +83,7 @@
     </section>
   </main>
   <script src="../assets/supabase-client.js"></script>
+  <script src="../assets/demo-backend.js"></script>
   <script src="../assets/student.js"></script>
 </body>
 </html>
