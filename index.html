@@ -2,83 +2,60 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#090a09">
-  <meta name="description" content="Joshi Defence Classes: student portal and secure owner admin login.">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#080909">
+  <meta name="description" content="Joshi Defence Classes — Your Dream, Our Mission. Student learning and academy administration.">
   <title>Joshi Defence Classes</title>
+  <link rel="stylesheet" href="assets/brand.css">
   <style>
-    :root{color-scheme:dark;--bg:#090a09;--panel:#151513;--panel2:#1e1d19;--gold:#f1c75b;--gold2:#ffdf83;--text:#f5f0e2;--muted:#c0bcae;--line:#3b372c;--red:#bc3438;--green:#168251;--max:1180px}
-    *{box-sizing:border-box}
-    html{scroll-behavior:smooth}
-    body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-    a{color:inherit}
-    .skip{position:absolute;left:-999px;top:8px;background:var(--gold);color:#111;padding:10px 14px;border-radius:8px;z-index:10}.skip:focus{left:8px}
-    .wrap{width:min(var(--max),calc(100% - 40px));margin-inline:auto}
-    .topbar{position:sticky;top:0;z-index:5;background:#090a09ed;border-bottom:1px solid #38352b;backdrop-filter:blur(14px)}
-    .nav{min-height:76px;display:flex;align-items:center;justify-content:space-between;gap:24px}
-    .brand{display:flex;align-items:center;gap:12px;text-decoration:none;font-weight:900;letter-spacing:.04em}
-    .crest{width:44px;height:48px;display:grid;place-items:center;clip-path:polygon(50% 0,100% 19%,91% 73%,50% 100%,9% 73%,0 19%);background:linear-gradient(145deg,#ffe493,#c9972b);color:#16130b;font-size:12px;font-weight:950}
-    .brand-name{font-size:15px;line-height:1.15}.brand-name span{display:block;color:var(--gold);font-size:12px;letter-spacing:.18em;margin-top:5px}
-    .navlinks{display:flex;align-items:center;gap:26px}.navlinks a{text-decoration:none;color:#d8d2c3;font-size:14px}.navlinks a:hover{color:var(--gold)}
-    .button{display:inline-flex;align-items:center;justify-content:center;gap:9px;border:1px solid transparent;border-radius:10px;padding:12px 18px;background:linear-gradient(115deg,var(--gold2),#dcae43);color:#17130a;font-weight:800;text-decoration:none;box-shadow:0 8px 24px #cf9e3033;transition:transform .18s,box-shadow .18s}
-    .button:hover{transform:translateY(-2px);box-shadow:0 12px 30px #cf9e3055}.button.secondary{background:#191916;border-color:#67604d;color:var(--text);box-shadow:none}.button.secondary:hover{border-color:var(--gold);color:var(--gold)}
-    .hero{position:relative;overflow:hidden;min-height:590px;display:grid;align-items:center;background:radial-gradient(ellipse at 79% 24%,#5a482766 0,transparent 30%),radial-gradient(ellipse at 86% 82%,#1e4f3866 0,transparent 25%),linear-gradient(110deg,#0a0a09 10%,#17140e 64%,#0a0b09 100%)}
-    .hero:before{content:"";position:absolute;inset:0;background:linear-gradient(100deg,#090a09 0%,#090a09dd 44%,transparent 100%);pointer-events:none}
-    .hero:after{content:"";position:absolute;right:-10%;bottom:0;width:62%;height:100%;background:linear-gradient(0deg,#080908 0%,transparent 35%),radial-gradient(ellipse at 75% 60%,#d6aa4c26 0 1%,transparent 36%);pointer-events:none}
-    .hero-inner{position:relative;z-index:1;display:grid;grid-template-columns:1.1fr .9fr;gap:42px;align-items:center;padding-block:74px}
-    .eyebrow{display:inline-flex;align-items:center;gap:10px;color:var(--gold);font-size:12px;font-weight:850;letter-spacing:.18em;text-transform:uppercase}.eyebrow:before{content:"";width:29px;height:2px;background:var(--gold)}
-    h1,h2,h3,p{margin-top:0}h1{font-size:clamp(42px,6vw,74px);line-height:.99;letter-spacing:-.045em;margin:20px 0}.gold{color:var(--gold)}
-    .hero-copy{max-width:590px;color:#d5d0c4;font-size:18px}.hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
-    .pillrow{display:flex;flex-wrap:wrap;gap:9px;margin-top:30px}.pill{border:1px solid #6a6048;border-radius:999px;padding:6px 12px;color:#e4dac0;font-size:12px;background:#11110fb3}
-    .hero-art{position:relative;min-height:365px;display:grid;place-items:center}.sun{position:absolute;width:min(30vw,310px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,#f6cf6b55 0,#ad762b1d 52%,transparent 70%);filter:blur(5px)}
-    .shield{position:relative;width:min(80%,340px);aspect-ratio:.84;display:grid;place-items:center;clip-path:polygon(50% 0,96% 17%,89% 70%,50% 100%,11% 70%,4% 17%);background:linear-gradient(145deg,#ffe18a,#9c7222 52%,#3b2c10);padding:10px;filter:drop-shadow(0 24px 38px #0009)}
-    .shield-inner{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;clip-path:polygon(50% 0,96% 17%,89% 70%,50% 100%,11% 70%,4% 17%);background:radial-gradient(ellipse at 50% 30%,#383020,#0c0d0c 66%);border:2px solid #17140c}
-    .crest-large{font-size:88px;line-height:1;filter:drop-shadow(0 0 16px #d9ad4a55)}.shield-inner strong{color:var(--gold);font-size:26px;letter-spacing:.13em;margin-top:6px}.shield-inner small{color:#e6dcc3;letter-spacing:.25em;font-size:10px;margin-top:4px}
-    .flag{position:absolute;left:0;right:0;bottom:0;height:7px;background:linear-gradient(to right,#ef8d3b 0 33.3%,#fff 33.3% 66.6%,#198754 66.6%)}
-    section{scroll-margin-top:90px}.section{padding:82px 0}.section-head{max-width:690px;margin-bottom:30px}.section-head h2{font-size:clamp(30px,4vw,44px);line-height:1.08;letter-spacing:-.03em;margin-bottom:12px}.section-head p{color:var(--muted);margin-bottom:0}
-    .intro{display:grid;grid-template-columns:1fr 1fr;gap:54px;align-items:center}.intro-panel{border:1px solid var(--line);border-radius:20px;background:linear-gradient(135deg,#181712,#10110f);padding:30px;box-shadow:0 18px 48px #0005}.intro-panel .big{font-size:42px;line-height:1;color:var(--gold);font-weight:900}.intro-panel p{color:var(--muted);margin:14px 0 0}
-    .branch-grid,.feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.branch{position:relative;min-height:220px;padding:23px;border:1px solid var(--line);border-radius:17px;background:linear-gradient(145deg,#1b1a16,#111210);overflow:hidden}.branch:after{content:"";position:absolute;right:-18px;bottom:-35px;width:130px;height:130px;border:1px solid #d3a74244;border-radius:50%;box-shadow:0 0 0 16px #d3a74208,0 0 0 32px #d3a74205}.branch .icon{font-size:29px}.branch h3{color:var(--gold);margin:12px 0 5px;font-size:21px}.branch p{color:var(--muted);margin:0;max-width:270px;font-size:14px}
-    .darkband{background:linear-gradient(90deg,#15130d,#0c0d0b);border-block:1px solid #332d20}.features{grid-template-columns:repeat(4,1fr)}.feature{padding:22px;border:1px solid var(--line);border-radius:15px;background:#121310}.feature .icon{display:grid;place-items:center;width:43px;height:43px;border-radius:12px;background:#332b18;color:var(--gold);font-size:21px}.feature h3{font-size:17px;margin:16px 0 6px}.feature p{font-size:13px;color:var(--muted);margin:0}
-    .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;counter-reset:step}.step{counter-increment:step;border-left:2px solid var(--gold);padding:4px 0 5px 20px}.step:before{content:"0" counter(step);display:block;color:var(--gold);font-size:12px;font-weight:900;letter-spacing:.14em;margin-bottom:8px}.step h3{margin:0 0 7px}.step p{color:var(--muted);margin:0;font-size:14px}
-    .cta{display:flex;align-items:center;justify-content:space-between;gap:30px;border:1px solid #79612e;border-radius:20px;padding:30px;background:radial-gradient(ellipse at 90% 0,#c4953a2b,transparent 44%),linear-gradient(120deg,#211a0d,#11120f)}.cta h2{font-size:clamp(26px,4vw,38px);margin:0 0 6px}.cta p{color:var(--muted);margin:0}
-    footer{border-top:1px solid var(--line);padding:24px 0;color:#aaa596;font-size:13px}.foot{display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap}.footlinks{display:flex;gap:17px}.foot a{color:#d9c16f;text-decoration:none}.foot a:hover{text-decoration:underline}
-    @media(max-width:850px){.navlinks{display:none}.hero-inner{grid-template-columns:1fr;gap:10px}.hero-art{min-height:270px}.shield{width:225px}.crest-large{font-size:60px}.branch-grid{grid-template-columns:1fr}.features{grid-template-columns:repeat(2,1fr)}.intro{grid-template-columns:1fr;gap:22px}.steps{grid-template-columns:1fr}.hero{min-height:auto}}
-    @media(max-width:520px){.wrap{width:min(var(--max),calc(100% - 28px))}.nav{min-height:68px}.brand-name{font-size:13px}.brand-name span{font-size:10px}.nav>.button{padding:10px 12px;font-size:13px}.hero-inner{padding-block:55px 30px}.hero-copy{font-size:16px}.hero-art{min-height:220px}.shield{width:185px}.crest-large{font-size:51px}.shield-inner strong{font-size:20px}.section{padding:58px 0}.features{grid-template-columns:1fr}.cta{align-items:flex-start;flex-direction:column;padding:23px}}
-    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition:none!important}}
-    .showcase-page{background:#090a09}
-    .showcase-nav{gap:12px}
-    .showcase-nav .button{white-space:nowrap}
-    .showcase-main{width:min(1254px,100%);margin:0 auto;padding:0 12px 22px}
-    .showcase-frame{position:relative;margin:0;overflow:hidden;border:1px solid #604c25;border-radius:15px;background:#080909;box-shadow:0 22px 60px #0009}
-    .showcase-image{display:block;width:100%;height:auto}
-    .showcase-hotspot{position:absolute;display:block;border-radius:10px;outline:0;background:transparent}
-    .showcase-hotspot:focus-visible{box-shadow:0 0 0 4px #ffdf83,0 0 22px #ffdf83}
-    .student-hotspot{left:1.8%;top:53.5%;width:14.5%;height:3.2%}
-    .admin-hotspot{left:52.1%;top:59.2%;width:14.2%;height:5.5%}
-    .showcase-access{display:flex;justify-content:center;gap:12px;padding:15px 0 0}
-    .showcase-access .button{min-width:190px}
-    @media(max-width:600px){.showcase-main{padding:0 5px 12px}.showcase-frame{border-radius:8px}.showcase-access{padding-inline:8px}.showcase-access .button{flex:1;min-width:0;padding:11px 8px;font-size:13px}}
+    .welcome{min-height:100svh;display:grid;grid-template-rows:auto 1fr auto;background:radial-gradient(ellipse at 77% 30%,#54401e60,transparent 36%),linear-gradient(140deg,#080909 8%,#12120f 57%,#090a09)}
+    .welcome-head{display:flex;justify-content:center;padding:26px 20px 4px}
+    .welcome-body{width:min(1160px,calc(100% - 40px));margin:auto;display:grid;grid-template-columns:1.1fr .9fr;align-items:center;gap:50px;padding:36px 0 58px}
+    .welcome-copy h1{margin:20px 0 12px;font-size:clamp(44px,7vw,82px);line-height:.98;letter-spacing:-.055em}
+    .welcome-copy p{max-width:560px;color:#c8c4b9;font-size:18px}
+    .welcome-crest{position:relative;display:grid;place-items:center;min-height:370px}
+    .welcome-crest:before{content:"";position:absolute;width:min(340px,76vw);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,#e4b94a30,transparent 67%);filter:blur(8px)}
+    .welcome-shield{position:relative;width:255px;height:300px;display:grid;place-items:center;clip-path:polygon(50% 0,96% 17%,89% 71%,50% 100%,11% 71%,4% 17%);background:linear-gradient(145deg,#fff0a8,#d7a43b 52%,#71511c);padding:7px;filter:drop-shadow(0 25px 30px #000a)}
+    .welcome-shield-inner{width:100%;height:100%;display:grid;place-items:center;align-content:center;gap:12px;clip-path:inherit;background:radial-gradient(ellipse at 50% 25%,#302a1e,#080909 72%);text-align:center}
+    .welcome-shield .brand-mark{width:112px;height:122px;font-size:26px}
+    .welcome-shield strong{max-width:200px;color:var(--gold-bright);font-size:19px;line-height:1.08;letter-spacing:.06em}
+    .welcome-shield small{color:#d7d2c7;font-size:9px;letter-spacing:.2em}
+    .welcome-actions{display:flex;flex-wrap:wrap;gap:11px;margin-top:25px}
+    .welcome-actions .btn{min-width:180px}
+    .welcome-branches{display:flex;flex-wrap:wrap;gap:17px;margin-top:30px;color:#e7d9b4;font-size:13px}
+    .welcome-branches span{display:flex;align-items:center;gap:7px}.welcome-branches b{color:var(--gold);font-size:17px}
+    .welcome-foot{padding:0 20px 16px;text-align:center;color:#a8a396;font-size:12px}
+    .welcome-foot .flag-line{margin:0 auto 14px}
+    @media(max-width:750px){.welcome-head{padding-top:20px}.welcome-body{grid-template-columns:1fr;gap:0;padding:28px 0 42px;text-align:center}.welcome-copy{order:2}.welcome-crest{order:1;min-height:245px}.welcome-shield{width:175px;height:208px}.welcome-shield .brand-mark{width:78px;height:86px;font-size:18px}.welcome-shield strong{font-size:14px}.welcome-shield small{font-size:7px}.welcome-copy h1{font-size:49px;margin:12px 0}.welcome-copy p{font-size:15px;margin-inline:auto}.welcome-actions,.welcome-branches{justify-content:center}.welcome-actions .btn{flex:1;min-width:145px}.welcome-branches{gap:12px;font-size:11px}}
   </style>
 </head>
-<body class="showcase-page">
+<body>
   <a class="skip" href="#main">Skip to content</a>
-  <header class="topbar">
-    <div class="wrap nav">
-      <a class="brand" href="./" aria-label="Joshi Defence Classes home"><span class="crest" aria-hidden="true">JDC</span><span class="brand-name">JOSHI DEFENCE<span>CLASSES</span></span></a>
-      <div class="showcase-nav"><a class="button secondary" href="admin/">Admin login</a><a class="button" href="student/">Get Started <span aria-hidden="true">→</span></a></div>
-    </div>
-  </header>
-  <main id="main" class="showcase-main">
-    <figure class="showcase-frame" aria-label="Joshi Defence Classes student and admin interface">
-      <img class="showcase-image" src="assets/jdc-app-showcase.jpg" alt="Joshi Defence Classes app layout: student welcome and login, home, live classes, recorded lessons, study PDFs, profile, tests, notifications, and admin panel, batch and student management screens.">
-      <a class="showcase-hotspot student-hotspot" href="student/" aria-label="Get Started: open student login"></a>
-      <a class="showcase-hotspot admin-hotspot" href="admin/" aria-label="Open admin panel login"></a>
-    </figure>
-    <div class="showcase-access" aria-label="Portal sign in">
-      <a class="button" href="student/">Student Get Started <span aria-hidden="true">→</span></a>
-      <a class="button secondary" href="admin/">Admin login <span aria-hidden="true">→</span></a>
-    </div>
+  <main id="main" class="welcome">
+    <header class="welcome-head">
+      <a class="brand" href="./" aria-label="Joshi Defence Classes home">
+        <span class="brand-mark" aria-hidden="true">JDC</span>
+        <span class="brand-name">JOSHI DEFENCE<span>CLASSES</span></span>
+      </a>
+    </header>
+    <section class="welcome-body" aria-labelledby="welcomeTitle">
+      <div class="welcome-copy">
+        <span class="eyebrow">India’s trusted defence academy</span>
+        <h1 id="welcomeTitle">Dream.<br><span class="gold">Prepare.</span><br>Achieve.</h1>
+        <p>Live learning, recorded classes, study material and test practice for your defence preparation — managed by your academy.</p>
+        <div class="welcome-actions">
+          <a class="btn" href="student/">Get started <span aria-hidden="true">→</span></a>
+          <a class="btn btn-quiet" href="admin/">Admin login</a>
+        </div>
+        <div class="welcome-branches" aria-label="Defence preparation">
+          <span><b>◎</b> Army</span><span><b>⚓</b> Navy</span><span><b>✦</b> Air Force</span>
+        </div>
+      </div>
+      <div class="welcome-crest" aria-hidden="true">
+        <div class="welcome-shield"><div class="welcome-shield-inner"><span class="brand-mark">JDC</span><strong>JOSHI DEFENCE CLASSES</strong><small>YOUR DREAM · OUR MISSION</small></div></div>
+      </div>
+    </section>
+    <footer class="welcome-foot"><div class="flag-line" aria-hidden="true"></div>© 2026 Joshi Defence Classes · Your Dream… Our Mission…</footer>
   </main>
-  <footer><div class="wrap foot"><span>© 2026 Joshi Defence Classes</span><div class="footlinks"><a href="privacy.html">Privacy</a></div><span>Dream • Prepare • Achieve</span></div></footer>
 </body>
 </html>
