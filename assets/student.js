@@ -132,7 +132,7 @@
       tabs.replaceChildren();
       [["all", "All"], ...categories.map((x) => [x.id, x.name])].forEach(([id, label]) => tabs.append(btn(label, () => { selected = id; draw(); }, selected !== id)));
       courseBox.replaceChildren(); const shown = courses.filter((course) => selected === "all" || course.exam_category_id === selected);
-      if (!shown.length) empty(courseBox, "No courses published", "Your academy administrator can add Army, Navy, Air Force, NDA, CDS and other preparation courses.");
+      if (!shown.length) empty(courseBox, "No courses published", "Your academy administrator can add Army, Navy, Air Force and other defence preparation courses.");
       for (const course of shown) { const category = categories.find((x) => x.id === course.exam_category_id)?.name || "Defence preparation"; const assigned = state.batches.some((batch) => batch.course_id === course.id); courseBox.append(cardRow(course.name, `${category} · ${course.description || "Course access is assigned by the academy."}`, "✦", assigned ? "MY BATCH" : "ACADEMY COURSE", assigned ? btn("Open batch", () => nav("live"), true) : null)); }
     };
     draw(); catalog.append(tabs, courseBox); out.append(catalog);

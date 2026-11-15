@@ -9,7 +9,7 @@
   const role = params.get("demo");
   if (!["student", "admin"].includes(role)) return;
 
-  const KEY = "jdc.preview.workspace.v1";
+  const KEY = "jdc.preview.workspace.v2";
   const now = () => new Date().toISOString();
   const id = (prefix = "preview") => `${prefix}-${crypto.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`}`;
   const copy = (value) => value == null ? value : JSON.parse(JSON.stringify(value));
@@ -37,20 +37,20 @@
           { id: studentId, full_name: "Demo Student", phone: "+919000000001", role: "student", is_active: true, created_at: created },
         ],
         academy_settings: [{ id: true, academy_name: "JOSHI DEFENCE CLASSES", tagline: "YOUR DREAM · OUR MISSION", support_email: "", support_phone: "", logo_url: null, updated_at: created }],
-        exam_categories: [{ id: categoryId, name: "NDA", description: "National Defence Academy entrance preparation", position: 1, is_active: true, created_at: created }],
-        courses: [{ id: courseId, exam_category_id: categoryId, name: "NDA Foundation", description: "A preview course for the JDC student and admin workflows.", is_active: true, created_at: created }],
+        exam_categories: [{ id: categoryId, name: "Defence Preparation", description: "Defence examination preparation", position: 1, is_active: true, created_at: created }],
+        courses: [{ id: courseId, exam_category_id: categoryId, name: "Defence Foundation", description: "A preview course for the JDC student and admin workflows.", is_active: true, created_at: created }],
         faculty: [{ id: facultyId, full_name: "JDC Faculty (Preview)", bio: "Add the academy faculty profile from the real admin account.", is_active: true, created_at: created }],
         subjects: [{ id: subjectId, course_id: courseId, name: "Indian Polity", description: "Constitution and governance", created_at: created }],
         chapters: [{ id: chapterId, subject_id: subjectId, title: "Fundamental Rights", position: 1, is_active: true, created_at: created }],
         batches: [
-          { id: batchId, name: "NDA Foundation · Preview", description: "Local preview batch for student content access.", is_active: true, course_id: courseId, lead_faculty_id: facultyId, price_inr: 0, is_purchasable: false, created_at: created },
-          { id: "preview-buy-batch", name: "CDS Batch · UPI Flow Preview", description: "Sample ₹1 fee. Do not transfer money; the demo QR cannot accept payment.", is_active: true, course_id: courseId, lead_faculty_id: facultyId, price_inr: 1, is_purchasable: true, created_at: created },
+          { id: batchId, name: "Foundation Batch · Preview", description: "Local preview batch for student content access.", is_active: true, course_id: courseId, lead_faculty_id: facultyId, price_inr: 0, is_purchasable: false, created_at: created },
+          { id: "preview-buy-batch", name: "Defence Batch · UPI Flow Preview", description: "Sample ₹1 fee. Do not transfer money; the demo QR cannot accept payment.", is_active: true, course_id: courseId, lead_faculty_id: facultyId, price_inr: 1, is_purchasable: true, created_at: created },
         ],
         enrollments: [{ id: "preview-enrollment", student_id: studentId, batch_id: batchId, created_at: created }],
         classes: [{ id: classId, batch_id: batchId, subject_id: subjectId, chapter_id: chapterId, faculty_id: facultyId, title: "YouTube player check · Preview lesson", description: "A sample player check. Replace this URL with your own recorded JDC lecture before using the real portal.", video_url: "https://www.youtube.com/watch?v=M7lc1UVf-VE", status: "published", published_at: created, created_at: created }],
         live_sessions: [{ id: liveId, batch_id: batchId, subject_id: subjectId, chapter_id: chapterId, faculty_id: facultyId, title: "Indian Polity · Live class setup preview", description: "Add your actual YouTube Live URL and switch the status to Live from the Admin preview.", live_url: "", recorded_video_url: "", provider: "youtube_live", scheduled_start: day(1), status: "scheduled", actual_start: null, actual_end: null, created_at: created }],
         study_pdfs: [{ id: "preview-pdf", batch_id: batchId, subject_id: subjectId, chapter_id: chapterId, title: "Fundamental Rights · Sample notes.pdf", storage_path: "preview/sample-notes.pdf", status: "published", created_at: created }],
-        test_series: [{ id: testId, batch_id: batchId, subject_id: subjectId, chapter_id: chapterId, title: "NDA Polity · Preview test", description: "Three sample questions to try the real test workflow.", duration_minutes: 15, is_published: true, available_from: null, available_until: null, created_at: created }],
+        test_series: [{ id: testId, batch_id: batchId, subject_id: subjectId, chapter_id: chapterId, title: "Polity · Preview test", description: "Three sample questions to try the real test workflow.", duration_minutes: 15, is_published: true, available_from: null, available_until: null, created_at: created }],
         test_questions: [
           { id: "preview-q1", test_series_id: testId, question_text: "Which part of the Constitution of India contains Fundamental Rights?", options: ["Part II", "Part III", "Part IV", "Part V"], correct_option: 1, marks: 1, position: 1 },
           { id: "preview-q2", test_series_id: testId, question_text: "Article 21 protects which right?", options: ["Equality before law", "Freedom of religion", "Life and personal liberty", "Education only"], correct_option: 2, marks: 1, position: 2 },
