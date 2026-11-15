@@ -39,10 +39,12 @@ body, body.student-page, body.admin-page {
 }
 button, input, select, textarea { font: inherit; }
 button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--mocha); outline-offset: 3px; }
 a { color: var(--mocha); }
 .hidden { display: none !important; }
 .muted { color: var(--muted); }
-.gold, .eyebrow, .notification-shortcut { color: var(--gold); }
+.gold, .notification-shortcut { color: var(--mocha); }
+.eyebrow { color: var(--mocha); }
 .small { font-size: 12px; }
 .eyebrow { font-size: 10px; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; }
 h1, .workspace-head h1, .surface-head h2, .hero-card h2,
@@ -197,6 +199,8 @@ h1, .workspace-head h1, .surface-head h2, .hero-card h2,
   color: var(--bg);
 }
 .login-art h1, .login-art .brand-name, .login-art p { color: var(--bg); }
+.login-art .eyebrow { color: var(--gold-bright); }
+.login-art .gold { color: var(--lavender); }
 .login-art h1 { font-size: clamp(42px, 6vw, 76px); }
 .login-art p { color: #F7F4F0E8; }
 .login-panel {

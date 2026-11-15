@@ -126,6 +126,7 @@
 
 .programme-section { display: grid; grid-template-columns: minmax(250px, .8fr) minmax(0, 1.2fr); gap: clamp(38px, 9vw, 130px); padding: 112px clamp(24px, 9vw, 145px); background: var(--bg); }
 .section-intro .eyebrow, .learning-copy .eyebrow { color: var(--mocha); }
+.learning-copy .eyebrow { color: var(--gold-bright); }
 .section-intro h2, .learning-copy h2 { margin: 15px 0 14px; color: var(--espresso); font: 500 clamp(38px, 4.6vw, 61px)/.97 var(--display-font); letter-spacing: -.04em; }
 .section-intro > p:not(.eyebrow), .learning-copy > p:not(.eyebrow) { max-width: 420px; color: var(--muted); font-size: 14px; line-height: 1.7; }
 .text-link { display: inline-flex; gap: 10px; align-items: center; margin-top: 18px; color: var(--mocha); font-size: 12px; font-weight: 800; text-decoration: none; }
