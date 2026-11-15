@@ -40,6 +40,11 @@ body, body.student-page, body.admin-page {
 button, input, select, textarea { font: inherit; }
 button { cursor: pointer; }
 :focus-visible { outline: 2px solid var(--mocha); outline-offset: 3px; }
+.topbar :focus-visible, .sidebar :focus-visible, .mobile-nav :focus-visible,
+.site-header :focus-visible, .site-footer :focus-visible, .login-art :focus-visible,
+.hero-card :focus-visible, .student-hero :focus-visible, .learning-band :focus-visible {
+  outline-color: var(--gold-bright);
+}
 a { color: var(--mocha); }
 .hidden { display: none !important; }
 .muted { color: var(--muted); }
