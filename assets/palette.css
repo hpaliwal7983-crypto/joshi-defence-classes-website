@@ -1,0 +1,206 @@
+/* Joshi Defence Classes — Ice Silver / Deep Aubergine / Marigold */
+:root {
+  color-scheme: light;
+  --bg: #F2ECE3;
+  --surface: #DDE3E8;
+  --surface-2: #E9EDF0;
+  --surface-3: #F7F8F9;
+  --aubergine: #3A0F34;
+  --gold: #EAAA00;
+  --gold-bright: #F5BB2E;
+  --ink: #3A0F34;
+  --text: #3A0F34;
+  --muted: #6F5F6C;
+  --line: #BEC5CC;
+  --green: #236443;
+  --red: #963746;
+  --shadow: 0 18px 44px #3A0F3418;
+}
+
+html, body { background: var(--bg); color: var(--text); }
+body, body.student-page, body.admin-page {
+  background: linear-gradient(140deg, #F6F1E9 0%, var(--bg) 58%, #E9E2DA 100%);
+  color: var(--text);
+}
+a { color: var(--aubergine); }
+.gold, .eyebrow, .notification-shortcut { color: var(--gold); }
+.muted, .workspace-head p { color: var(--muted); }
+
+.topbar {
+  border-bottom: 1px solid #EAAA0066;
+  background: var(--aubergine);
+  color: #F7F3F6;
+}
+.topbar .brand-name, .topbar a { color: #F7F3F6; }
+.topbar .brand-name span { color: var(--gold-bright); }
+.topbar .btn-quiet {
+  border-color: #EDE4EC77;
+  background: #FFFFFF12;
+  color: #FFF9FF;
+}
+.topbar .btn-quiet:hover { border-color: var(--gold); color: var(--gold-bright); }
+.online-dot { color: #F2EAF1; }
+.avatar {
+  border-color: var(--gold);
+  background: linear-gradient(145deg, #55204C, var(--aubergine));
+  color: var(--gold-bright);
+}
+
+.sidebar, .mobile-nav {
+  border-color: #6E3A65;
+  background: linear-gradient(180deg, #3A0F34, #2C0B28);
+}
+.side-label { color: #D9C6D5; }
+.nav-link { color: #F2E9F1; }
+.nav-link:hover { background: #FFFFFF14; color: #FFFFFF; }
+.nav-link.active, .mobile-nav .nav-link.active {
+  border-color: #EAAA00;
+  background: var(--gold);
+  color: var(--aubergine);
+}
+.nav-link.active .nav-icon, .nav-icon { color: var(--gold-bright); }
+.nav-link.active .nav-icon { color: var(--aubergine); }
+.side-note {
+  border-color: #815476;
+  background: #4A1C43;
+  color: #F0E7EF;
+}
+.side-note strong { color: var(--gold-bright); }
+
+.workspace { color: var(--aubergine); }
+.surface, .metric, .quick-link, .list-row, .record-card,
+.feature-card, .test-card, .test-question, .admin-record,
+.setup-item, .question-preview, .purchase-card, .payment-qr-panel,
+.admin-payment-details, .profile-hero, .form-field, .empty-state {
+  border-color: var(--line);
+  background: linear-gradient(145deg, #F7F8F9, var(--surface));
+  color: var(--aubergine);
+  box-shadow: 0 9px 24px #3A0F340A;
+}
+.surface-head h2, .list-body strong, .record-copy strong,
+.admin-record strong, .workspace-head h1, .surface h2, .surface h3 {
+  color: var(--aubergine);
+}
+.list-row, .admin-record, .record-card, .feature-card, .test-card,
+.test-question, .question-preview, .setup-item, .purchase-card {
+  background: #E9EDF0;
+}
+.list-icon, .quick-icon, .empty-mark, .test-mark, .admin-record .record-icon {
+  background: #F7E8B8;
+  color: var(--aubergine);
+}
+.quick-link { color: var(--aubergine); }
+.quick-link:hover, .feature-card:hover { border-color: var(--gold); }
+.list-body span, .record-copy small, .metric-label, .metric-foot,
+.profile-header p, .admin-record small { color: var(--muted); }
+.metric-value, .result-score, .purchase-price { color: var(--aubergine); }
+.metric:after { border-color: #EAAA0044; box-shadow: 0 0 0 13px #EAAA0011, 0 0 0 26px #EAAA0008; }
+.hero-card, .student-hero {
+  border-color: #794170;
+  background: radial-gradient(ellipse at 82% 28%, #EAAA0033, transparent 36%), linear-gradient(110deg, #3A0F34, #502047 58%, #2C0B28);
+  color: #FFF9FF;
+}
+.hero-card h2, .student-hero h2, .hero-card .eyebrow, .student-hero .eyebrow { color: var(--gold-bright); }
+.hero-card p, .student-hero p { color: #F1E8F0; }
+.hero-card:after, .student-hero:after { border-color: #EAAA0033; }
+.student-hero:after { box-shadow: 0 0 0 17px #EAAA0010, 0 0 0 36px #EAAA0008; }
+
+.btn {
+  border-color: #D99A00;
+  background: linear-gradient(115deg, #F5BB2E, #EAAA00);
+  box-shadow: 0 8px 20px #A66E1826;
+  color: var(--aubergine);
+}
+.btn:hover { border-color: #C98900; }
+.btn-quiet, .icon-btn {
+  border-color: #92718D;
+  background: #F7F8F9;
+  color: var(--aubergine);
+}
+.btn-quiet:hover, .icon-btn:hover { border-color: var(--gold); color: var(--aubergine); }
+.btn-danger { border-color: #B56470; background: #F5E1E4; color: #782B3A; }
+.text-link, .surface-head a, .text-link { color: var(--aubergine); }
+
+.badge { border-color: #D4A326; background: #F7E8B8; color: var(--aubergine); }
+.badge-green { border-color: #8CB89C; background: #E4F0E8; color: #205A3C; }
+.badge-red { border-color: #D4A0A6; background: #F5E1E4; color: #782B3A; }
+.progress-track { background: #C6CDD3; }
+.progress-fill { background: linear-gradient(90deg, #EAAA00, #F6C84B); }
+.progress-ring, .result-score { color: var(--aubergine); }
+
+.form-field label, .payment-settings-form label { color: var(--aubergine); }
+.form-field input, .form-field select, .form-field textarea,
+.payment-request-form input, .payment-settings-form textarea,
+.admin-select, .search, .private-comment input {
+  border-color: #B7BEC6;
+  background: #FFFFFF;
+  color: var(--aubergine);
+}
+.form-field input::placeholder, .search::placeholder, .private-comment input::placeholder { color: #796B77; }
+.form-field input:focus, .form-field select:focus, .form-field textarea:focus,
+.payment-request-form input:focus, .admin-select:focus, .search:focus,
+.private-comment input:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px #EAAA0030;
+  outline: none;
+}
+.status { color: #735600; }
+.status.error { color: #963746; }
+.status.success { color: #236443; }
+.empty-state { border-style: dashed; color: var(--muted); }
+.empty-state strong { color: var(--aubergine); }
+
+.login-page { background: var(--bg); }
+.login-art, .student-auth-art, .login-art.student-auth-art, .login-art.admin-auth-art {
+  border-color: #75446D;
+  background: radial-gradient(ellipse at 78% 42%, #EAAA0030, transparent 44%), linear-gradient(135deg, #3A0F34, #2C0B28 76%);
+}
+.login-art h1, .login-art .brand-name, .login-art p { color: #FFF9FF; }
+.login-art p { color: #E8DCE7; }
+.login-panel {
+  border-color: var(--line);
+  background: linear-gradient(145deg, #F7F8F9, var(--surface));
+  color: var(--aubergine);
+}
+.login-panel h2 { color: var(--aubergine); }
+.login-panel p, .login-footer { color: var(--muted); }
+.login-panel .btn-quiet { background: #FFFFFF; color: var(--aubergine); }
+.login-panel .text-link { color: var(--aubergine); }
+.skip { background: var(--gold); color: var(--aubergine); }
+
+.preview-banner {
+  border-color: #D6A522;
+  background: #F7E8B8;
+  color: var(--aubergine);
+}
+.preview-banner span { color: #624F5F; }
+.preview-banner strong { color: var(--aubergine); }
+.preview-banner a, .preview-banner button {
+  border-color: #A77B12;
+  background: var(--aubergine);
+  color: #FFF9FF;
+}
+.preview-banner a:hover, .preview-banner button:hover { border-color: var(--gold); color: var(--gold-bright); }
+.payment-qr-panel, .admin-payment-details { border-color: var(--line); background: #E9EDF0; }
+.payment-qr-copy strong { color: var(--aubergine); }
+.payment-qr-copy code { background: var(--aubergine); color: #FFF9FF; }
+.demo-payment-mark { border-color: var(--gold); border-bottom-color: var(--aubergine); background: #F7F8F9; color: var(--aubergine); }
+.demo-payment-mark b { color: var(--aubergine); }
+.admin-dialog { border-color: #A77B12; background: #F7F8F9; color: var(--aubergine); }
+.dialog-header { border-color: var(--line); background: #F7F8F9F5; }
+.question-preview ol { color: #5E4B5A; }
+.answer-option { border-color: #BEC5CC; background: #F7F8F9; color: var(--aubergine); }
+.answer-option:has(input:checked) { border-color: var(--gold); background: #F7E8B8; }
+.answer-option input { accent-color: var(--aubergine); }
+.test-progress { border-color: #D4A326; background: #F7E8B8; color: var(--aubergine); }
+.notification-row.unread { border-color: var(--gold); background: #F7E8B8; }
+.notification-row.unread .list-icon { background: #F0D889; }
+.subject-pill { border-color: #C6B2C3; background: #E9EDF0; color: var(--aubergine); }
+.replay-note { border-left-color: var(--gold); background: #E9EDF0; color: #574653; }
+.admin-identity { border-bottom-color: #815476; }
+.question-palette .answered { border-color: #8CB89C; background: #E4F0E8; }
+.course-grid .record-card, .course-grid .list-row { background: #E9EDF0; }
+
+@media (max-width: 720px) {
+  .mobile-nav { border-top-color: #EAAA0066; }
+}
